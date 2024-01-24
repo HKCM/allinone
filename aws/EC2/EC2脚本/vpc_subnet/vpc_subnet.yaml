@@ -1,0 +1,180 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: This CloudFormation will Create S3 bucket, VPC , Subnet and EIP as eu-west-1 basic infra
+
+Parameters:
+  NameSpace:
+    Type: String
+    Default: 'test'
+  VPCCIDR:
+    Type: String
+    Default: '10.100.0.0/16'
+  SubnetPubCIDR:
+    Type: String
+    Default: '10.100.0.0/24'
+  SubnetPriv1CIDR:
+    Type: String
+    Default: '10.100.100.0/24'
+  SubnetPriv2CIDR:
+    Type: String
+    Default: '10.100.101.0/24'
+
+Resources:
+  # Create VPC
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref VPCCIDR
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags: 
+        - Key: Name
+          Value: !Sub '${NameSpace}-vpc'
+
+  DhcpOptions: 
+    Type: AWS::EC2::DHCPOptions
+    Properties: 
+        DomainName: eu-west-1.compute.internal
+        DomainNameServers: 
+          - AmazonProvidedDNS
+        Tags:
+          - Key: Name
+            Value: !Sub '${NameSpace}-dhcp'
+
+  VPCDHCPOptionsAssociation:
+    Type: AWS::EC2::VPCDHCPOptionsAssociation
+    Properties:
+      VpcId:
+         Ref: VPC
+      DhcpOptionsId:
+         Ref: DhcpOptions
+
+  # Create subnet: 1 pub subnet and 2 priv subnet ================
+  Subnetpub:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      CidrBlock: !Ref SubnetPubCIDR
+      VpcId: !Ref VPC
+      Tags: 
+        - Key: Name
+          Value: !Sub ${NameSpace}-pub
+
+  Subnetpriv1:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      CidrBlock: !Ref SubnetPriv1CIDR
+      Tags: 
+        - Key: Name
+          Value: !Sub ${NameSpace}-priv1
+      VpcId: !Ref VPC
+
+  Subnetpriv2:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      CidrBlock: !Ref SubnetPriv2CIDR
+      Tags: 
+        - Key: Name
+          Value: !Sub ${NameSpace}-priv2
+      VpcId: !Ref VPC
+
+  # Association route table to subnet==================
+  subnetpubroutetableassociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref routetablepub
+      SubnetId: !Ref Subnetpub
+
+  subnetpriv1routetableassociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref routetablepriv
+      SubnetId: !Ref Subnetpriv1
+
+  subnetpriv2routetableassociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref routetablepriv
+      SubnetId: !Ref Subnetpriv2
+
+  # Create 2 route tables =========================
+  routetablepriv:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: !Sub '${NameSpace}-priv-routetable'
+      VpcId: !Ref VPC
+
+  routetablepub:
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: !Sub '${NameSpace}-pub-routetable'
+      VpcId: !Ref VPC
+  
+  # Create pub and priv route ========================
+  routepub:
+    Type: AWS::EC2::Route
+    DependsOn: GatewayToInternet
+    Properties: 
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref igw
+      RouteTableId: !Ref routetablepub
+
+  routepriv:
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: '0.0.0.0/0'
+      NatGatewayId: !Ref ngw
+      RouteTableId: !Ref routetablepriv
+
+  igw:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: !Sub '${NameSpace}-igw'
+
+  GatewayToInternet:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: VPC
+      InternetGatewayId:
+        Ref: igw
+
+  ngw:
+    Type: AWS::EC2::NatGateway
+    Properties: 
+      AllocationId: !GetAtt EIP.AllocationId
+      SubnetId: !Ref Subnetpub
+      Tags: 
+        - Key: Name
+          Value: !Sub '${NameSpace}-ngw'
+
+  EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+    DependsOn: VPC
+
+  sg:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: 'web access for vpc'
+      GroupName: !Sub '${NameSpace}-web'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref VPC
+
+
+

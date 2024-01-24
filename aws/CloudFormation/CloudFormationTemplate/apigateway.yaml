@@ -1,0 +1,253 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: application with api gateway
+
+Parameters:
+
+  Name:
+    Type: String
+
+  NameSpace:
+    Type: String
+
+  StageName:
+    Type: String
+    Default: staging
+    AllowedValues:
+      - test
+      - staging
+      - production
+      - amsup
+      - amrup
+
+  DomainName:
+    Type: String
+
+  LoggingLevel:
+    Type: String
+
+  Bucket:
+    Type: String
+
+  Key:
+    Type: String
+
+  AlarmSNSTopic:
+    Type: String
+
+  BoundaryPolicy:
+    Type: String
+
+Resources:
+
+  # Lambda -------------------------------------------------------------------------------------------------------------
+
+  BotApi:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Ref Name
+      Runtime: python3.6
+      Code:
+        S3Bucket: !Ref Bucket
+        S3Key: !Ref Key
+      Handler: src/index.handler
+      Timeout: 3
+      MemorySize: 512
+      TracingConfig: 
+        Mode: 'Active'
+      Role: !GetAtt LambdaRole.Arn
+      Environment:
+        Variables:
+          LOGGING_LEVEL: !Ref LoggingLevel
+          KMS_MASTER_KEY_ID:
+            Fn::ImportValue: !Sub '${NameSpace}-environment:keyName'
+          USERS_TABLE:
+            Fn::ImportValue: !Sub '${NameSpace}-database-UsersDBName'
+          BOTS_TABLE:
+            Fn::ImportValue: !Sub '${NameSpace}-database-BotsDBName'
+          STATIC_FILES_PATH: !Sub "https://${DomainName}/static"
+          API_BASE_URL: !Sub "https://${DomainName}/api"
+
+  # Lambda Role --------------------------------------------------------------------------------------------------------
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${Name}-execution-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          Effect: Allow
+          Principal:
+            Service: 'lambda.amazonaws.com'
+          Action: 'sts:AssumeRole'
+      PermissionsBoundary: !Ref BoundaryPolicy
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Policies:
+        - PolicyName: 'dynamedb-tables'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action: 'dynamodb:*'
+              Effect: 'Allow'
+              Resource:
+                - 'Fn::ImportValue': !Sub '${NameSpace}-database-UsersDBArn'
+                - 'Fn::ImportValue': !Sub '${NameSpace}-database-BotsDBArn'
+                - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/rcbot-*'
+        - PolicyName: 'invoke-lambda'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action: 'lambda:InvokeFunction'
+              Effect: 'Allow'
+              Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${NameSpace}-*'
+        - PolicyName: 'kms-keys'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              Action:
+                - 'kms:GenerateDataKey'
+                - 'kms:Decrypt'
+              Effect: 'Allow'
+              Resource:
+                - 'Fn::ImportValue': !Sub '${NameSpace}-environment:keyArn'
+        - PolicyName: xray
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Action:
+              - 'xray:PutTraceSegments'
+              - 'xray:PutTelemetryRecords'
+              Effect: Allow
+              Resource: '*'
+
+  # Alarms -------------------------------------------------------------------------------------------------------------
+
+  Duration:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      ActionsEnabled: 'true'
+      Namespace: AWS/Lambda
+      MetricName: Duration
+      ComparisonOperator: GreaterThanThreshold
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 2700
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Name
+        - Name: Resource
+          Value: !Ref Name
+      Statistic: Average
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - Ref: AlarmSNSTopic
+
+  # Lambda Log Group ---------------------------------------------------------------------------------------------------
+
+  BotApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${Name}'
+
+
+  # API Gateway Integration --------------------------------------------------------------------------------------------
+
+  # /api
+  ApiRootResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      PathPart: 'api'
+      ParentId:
+        Fn::ImportValue: !Sub '${NameSpace}-environment:RootResourceId'
+      RestApiId:
+        Fn::ImportValue: !Sub '${NameSpace}-environment:RestApiID'
+
+  # /api/{version}
+  ApiVersionResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      PathPart: '{version}'
+      ParentId: !Ref ApiRootResource
+      RestApiId:
+        Fn::ImportValue: !Sub '${NameSpace}-environment:RestApiID'
+
+  # /api/{version}/{service}
+  ApiServiceResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      PathPart: '{service}'
+      ParentId: !Ref ApiVersionResource
+      RestApiId:
+        Fn::ImportValue: !Sub '${NameSpace}-environment:RestApiID'
+
+  # /api/{version}/{service}/{path+}
+  ApiPathResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      PathPart: '{path+}'
+      ParentId: !Ref ApiServiceResource
+      RestApiId:
+        Fn::ImportValue:
+          !Sub '${NameSpace}-environment:RestApiID'
+
+  # /api/{version}/{service}/{path+} ANY
+  RestApiMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId:
+        Fn::ImportValue:
+          !Sub '${NameSpace}-environment:RestApiID'
+      ResourceId: !Ref ApiPathResource
+      HttpMethod: ANY
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BotApi.Arn}/invocations'
+
+  LambdaInvocationPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: BotApi
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref Name
+      Principal: 'apigateway.amazonaws.com'
+      SourceArn: !Sub
+        - 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${apiID}/*/*/*/*/*'
+        - apiID:
+            Fn::ImportValue:  !Sub '${NameSpace}-environment:RestApiID'
+
+  RestApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId:
+        Fn::ImportValue: !Sub '${NameSpace}-environment:RestApiID'
+    DependsOn:
+      - RestApiMethod
+
+  Stage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId: !Ref RestApiDeployment
+      RestApiId:
+        Fn::ImportValue: !Sub '${NameSpace}-environment:RestApiID'
+      StageName:
+        Ref: StageName
+
+# Outputs --------------------------------------------------------------------------------------------------------------
+
+Outputs:
+  LambdaARN:
+    Value: !GetAtt BotApi.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}:LambdaARN'
+  LambdaName:
+    Value: !Ref BotApi
+    Export:
+      Name: !Sub '${AWS::StackName}:LambdaName'
+  LogGroup:
+    Value: !Ref BotApiLogGroup
+    Export:
+      Name: !Sub '${AWS::StackName}:LogGroup'

@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Environment Resources
+
+Parameters:
+  Name: 
+    Description: Name of the Subnet
+    Type: String
+    Default: 'test'
+  Environment: 
+    Description: Version
+    Type: String
+    AllowedValues: 
+      - dev
+      - stage
+      - prod
+  CIDR:
+    Description: VPC Subnet CIDR
+    Type: String
+    Default: '10.2.0.0/24'
+  VPCID:
+    Type: String
+
+Mappings: 
+  NameChoose: 
+    test:
+      dev: test-dev-subnet
+      stage: test-stage-subnet
+      prod: test-prod-subnet
+
+Resources:
+  Subnet:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      CidrBlock: !Ref CIDR
+      MapPublicIpOnLaunch: True
+      Tags: 
+        - Key: Name
+          Value: !FindInMap
+            - NameChoose
+            - !Ref Name
+            - !Ref Environment
+      VpcId: !Ref VPCID
+
+Outputs: 
+  SubnetId: 
+    Description: Subnet ID
+    Export: 
+      Name: !Sub ${AWS::StackName}-Subnet
+    Value: !Ref Subnet

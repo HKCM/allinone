@@ -1,0 +1,489 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create CloudWatch Dashboard
+Parameters:
+  NameSpace:
+    Type: String
+
+Resources:
+# Metric, Alarm and Dashboard =======================================================================================
+
+  # Failed Metric Filter========================================
+  MetricFilterAccessDenied:
+    Type: AWS::Logs::MetricFilter
+    Properties: 
+      FilterPattern: "AccessDenied"
+      LogGroupName: 
+        Fn::ImportValue: !Sub '${NameSpace}-lambda:LogGroup'
+      MetricTransformations: 
+        - 
+          MetricValue: 1
+          MetricNamespace: !Sub "${NameSpace}"
+          MetricName: "AccessDenied"
+  
+  # Duration time Metric Filter =============================================
+  MetricFiltergetMeetingListStartTime:
+    Type: AWS::Logs::MetricFilter
+    Properties: 
+      FilterPattern: '[...,getMeetingList_StartTime="getMeetingList_StartTime",colon,StartTime]'
+      LogGroupName: 
+        Fn::ImportValue: !Sub '${NameSpace}-lambda:LogGroup'
+      MetricTransformations: 
+        - 
+          MetricValue: "$StartTime"
+          MetricNamespace: !Sub "${NameSpace}"
+          MetricName: "getMeetingList_StartTime"
+  
+  # Alarm
+  LambdaAlarm:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmDescription: 'Lambda Alarm'
+      ActionsEnabled: 'true'
+      AlarmActions:
+        - !Ref SNSForCloudformation ==================================================
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      ComparisonOperator: GreaterThanThreshold
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 10
+      Dimensions:
+        - Name: FunctionName
+          Value: !Sub int-${Brand}-${Stage}-entry ==========================================
+      Statistic: Sum
+      TreatMissingData: notBreaching
+
+  
+# Dashboard =======================================================================================
+  DashboardSideBySide:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: !Sub "${NameSpace}"
+      DashboardBody: !Sub '
+        {
+            "widgets": [
+                {
+                    "type": "metric",
+                    "x": 0,
+                    "y": 0,
+                    "width": 12,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ { "expression": "m2+m3+m4+m5+m6+m7", "label": "Failed", "id": "e1", "region": "${AWS::Region}", "color": "#d62728", "period": 300 } ],
+                            [ { "expression": "m1-e1", "label": "Succeed", "id": "e2", "color": "#2ca02c", "region": "${AWS::Region}", "period": 300 } ],
+                            [ "AWS/Lambda", "Invocations", "FunctionName", "${NameSpace}-lambda", { "id": "m1", "visible": false } ],
+                            [ "${NameSpace}", "AccessDenied", { "id": "m2", "visible": false } ],
+                            [ ".", "Delete_Meeting_Fail", { "id": "m3", "visible": false } ],
+                            [ ".", "Schedule_Meeting_Fail", { "id": "m4", "visible": false } ],
+                            [ ".", "LoadMeetingPageFail", { "id": "m5", "visible": false } ],
+                            [ ".", "getMeetingList_pageNation_Fail", { "id": "m6", "visible": false } ],
+                            [ ".", "getMeetingList_Fail", { "id": "m7", "visible": false } ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Sum",
+                        "period": 300,
+                        "title": "Lambda Invocations And Error",
+                        "legend": {
+                            "position": "bottom"
+                        },
+                        "yAxis": {
+                            "left": {
+                                "showUnits": false,
+                                "label": "Counts"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 12,
+                    "y": 0,
+                    "width": 12,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ "AWS/Lambda", "Invocations", "FunctionName", "${NameSpace}-lambda" ],
+                            [ ".", "Throttles", ".", "." ],
+                            [ ".", "ConcurrentExecutions", ".", "." ],
+                            [ ".", "Errors", ".", "." ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Sum",
+                        "period": 300,
+                        "title": "Lambda Function Monitor"
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 0,
+                    "y": 6,
+                    "width": 12,
+                    "height": 6,
+                    "properties": {
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "metrics": [
+                            [ "AWS/Lambda", "Duration", "FunctionName", "${NameSpace}-lambda" ]
+                        ],
+                        "region": "${AWS::Region}",
+                        "title": "Lambda Function Duration"
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 12,
+                    "y": 6,
+                    "width": 12,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ "${NameSpace}", "AccessDenied", { "id": "m2" } ],
+                            [ ".", "Delete_Meeting_Fail", { "id": "m3" } ],
+                            [ ".", "Schedule_Meeting_Fail", { "id": "m4" } ],
+                            [ ".", "LoadMeetingPageFail", { "id": "m5" } ],
+                            [ ".", "getMeetingList_pageNation_Fail", { "id": "m6" } ],
+                            [ ".", "getMeetingList_Fail", { "id": "m7" } ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": true,
+                        "region": "${AWS::Region}",
+                        "stat": "Sum",
+                        "period": 600,
+                        "title": "Lambda Internal Error Type Monitor",
+                        "yAxis": {
+                            "left": {
+                                "showUnits": false,
+                                "label": "Counts"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 0,
+                    "y": 12,
+                    "width": 24,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ "${NameSpace}", "Delete_Meeting", { "yAxis": "left", "id": "m1", "label": "DeleteMeeting" } ],
+                            [ ".", "getMeetingList", { "id": "m2", "label": "GetMeetingList" } ],
+                            [ ".", "Schedule_Meeting", { "id": "m3", "label": "ScheduleMeeting" } ],
+                            [ "${NameSpace}", "AccessDenied", { "label": "AccessDenied" } ],
+                            [ ".", "Delete_Meeting_Fail", { "label": "DeleteMeetingFail" } ],
+                            [ ".", "Schedule_Meeting_Fail", { "label": "ScheduleMeetingFail" } ],
+                            [ ".", "getMeetingList_Fail", { "label": "getMeetingListFail" } ],
+                            [ ".", "LoadMeetingPageFail", { "label": "LoadMeetingPageFail" }],
+                            [ "AWS/Lambda", "Invocations", "FunctionName", "${NameSpace}-lambda", { "label": "Invocations","id": "m4" } ]
+                        ],
+                        "view": "singleValue",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Sum",
+                        "period": 2592000,
+                        "singleValueFullPrecision": false,
+                        "setPeriodToTimeRange": true,
+                        "title": "Action Count"
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 0,
+                    "y": 24,
+                    "width": 24,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ { "expression": "100*(m1/m4)", "label": "DeleteMeeting", "id": "e1" } ],
+                            [ { "expression": "100*(m2/m4)", "label": "GetMeetingList", "id": "e2" } ],
+                            [ { "expression": "100*(m3/m4)", "label": "ScheduleMeeting", "id": "e3" } ],
+                            [ { "expression": "100*(m5/m4)", "label": "AccessDenied", "id": "e4" } ],
+                            [ { "expression": "100*(m6/m4)", "label": "DeleteMeetingFail", "id": "e5" } ],
+                            [ { "expression": "100*(m7/m4)", "label": "ScheduleMeetingFail", "id": "e6" } ],
+                            [ { "expression": "100*(m8/m4)", "label": "getMeetingListFail", "id": "e7" } ],
+                            [ { "expression": "100*(m9/m4)", "label": "LoadMeetingPageFail", "id": "e8" } ],
+                            [ "${NameSpace}", "Delete_Meeting", { "yAxis": "left", "id": "m1", "label": "DeleteMeeting", "visible": false } ],
+                            [ ".", "getMeetingList", { "id": "m2", "label": "GetMeetingList", "visible": false } ],
+                            [ ".", "Schedule_Meeting", { "id": "m3", "label": "ScheduleMeeting", "visible": false } ],
+                            [ "AWS/Lambda", "Invocations", "FunctionName", "${NameSpace}-lambda", { "id": "m4", "visible": false } ],
+                            [ "${NameSpace}", "AccessDenied", { "label": "AccessDenied", "id": "m5", "visible": false } ],
+                            [ ".", "Delete_Meeting_Fail", { "label": "DeleteMeetingFail", "id": "m6", "visible": false } ],
+                            [ ".", "Schedule_Meeting_Fail", { "label": "ScheduleMeetingFail", "id": "m7", "visible": false } ],
+                            [ ".", "getMeetingList_Fail", { "label": "getMeetingListFail", "id": "m8", "visible": false } ],
+                            [ ".", "LoadMeetingPageFail", { "label": "LoadMeetingPageFail", "id": "m9", "visible": false } ]
+                        ],
+                        "view": "singleValue",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Sum",
+                        "period": 2592000,
+                        "singleValueFullPrecision": false,
+                        "setPeriodToTimeRange": true,
+                        "title": "Action Percentage (%)"
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 0,
+                    "y": 30,
+                    "width": 12,
+                    "height": 6,
+                    "properties": {
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "metrics": [
+                            [ "AWS/DynamoDB", "ConsumedWriteCapacityUnits", "TableName", "${NameSpace}-database" ],
+                            [ ".", "ConsumedReadCapacityUnits", ".", "." ]
+                        ],
+                        "region": "${AWS::Region}",
+                        "title": "DynamoBD CapacityUnits Monitor ( Average )",
+                        "period": 300
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 12,
+                    "y": 30,
+                    "width": 12,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ "AWS/ApiGateway", "4XXError", "ApiName", "${NameSpace}-api" ],
+                            [ ".", "5XXError", ".", "." ],
+                            [ ".", "Count", ".", "." ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "period": 300,
+                        "title": "API Gateway Monitor",
+                        "stat": "Sum"
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 0,
+                    "y": 36,
+                    "width": 12,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ "AWS/DynamoDB", "ConsumedWriteCapacityUnits", "TableName", "${NameSpace}-database", { "color": "#1f77b4" } ],
+                            [ ".", "ConsumedReadCapacityUnits", ".", ".", { "color": "#ff7f0e" } ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Sum",
+                        "period": 300,
+                        "title": "DynamoBD CapacityUnits Monitor ( Sum )"
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 12,
+                    "y": 36,
+                    "width": 12,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ "AWS/ApiGateway", "Latency", "ApiName", "${NameSpace}-api" ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "title": "API Gateway Latency Monitor",
+                        "period": 300,
+                        "stat": "Average"
+                    }
+                }, 
+                {
+                    "type": "metric",
+                    "x": 0,
+                    "y": 42,
+                    "width": 6,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ { "expression": "m2-m1", "label": "getMeetingList_Duration", "id": "e1", "region": "${AWS::Region}", "visible": false } ],
+                            [ { "expression": "IF(e1 > 0, e1, 0)", "label": "Get MeetingList Duration", "id": "e2", "region": "${AWS::Region}" } ],
+                            [ "${NameSpace}", "getMeetingList_EndTime", { "id": "m2", "visible": false } ],
+                            [ ".", "getMeetingList_StartTime", { "id": "m1", "visible": false } ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Average",
+                        "period": 600,
+                        "title": "Get MeetingList Duration",
+                        "yAxis": {
+                            "left": {
+                                "showUnits": false,
+                                "label": "MilliSeconds"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 6,
+                    "y": 42,
+                    "width": 6,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ { "expression": "m2-m1", "label": "Schedule_Meeting_Duration", "id": "e1", "region": "${AWS::Region}", "visible": false } ],
+                            [ { "expression": "IF(e1 > 0 , e1, 0)", "label": "Schedule Meeting Duration", "id": "e2", "region": "${AWS::Region}" } ],
+                            [ "${NameSpace}", "Schedule_Meeting_StartTime", { "id": "m1", "visible": false } ],
+                            [ ".", "Schedule_Meeting_EndTime", { "id": "m2", "visible": false } ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Average",
+                        "period": 600,
+                        "title": "Schedule Meeting Duration",
+                        "yAxis": {
+                            "left": {
+                                "label": "MilliSeconds",
+                                "showUnits": false
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 12,
+                    "y": 42,
+                    "width": 6,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ { "expression": "m2-m1", "label": "getMeetingList_pageNation_Duration", "id": "e1", "region": "${AWS::Region}", "visible": false } ],
+                            [ { "expression": "IF(e1 > 0, e1, 0)", "label": "GetMeetingList pageNation Duration", "id": "e2", "color": "#1f77b4", "region": "${AWS::Region}" } ],
+                            [ "${NameSpace}", "getMeetingList_pageNation_StartTime", { "id": "m1", "visible": false } ],
+                            [ ".", "getMeetingList_pageNation_EndTime", { "id": "m2", "visible": false } ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Average",
+                        "period": 600,
+                        "title": "GetMeetingList pageNation Duration",
+                        "yAxis": {
+                            "left": {
+                                "showUnits": false,
+                                "label": "MilliSeconds"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 18,
+                    "y": 42,
+                    "width": 6,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ { "expression": "m1-m2", "label": "Delete_Meeting_Duration", "id": "e1", "region": "${AWS::Region}", "visible": false } ],
+                            [ { "expression": "IF(e1 > 0 , e1, 0)", "label": "Delete Meeting Duration", "id": "e2", "region": "${AWS::Region}" } ],
+                            [ "${NameSpace}", "Delete_Meeting_EndTime", { "id": "m1", "visible": false } ],
+                            [ ".", "Delete_Meeting_StartTime", { "id": "m2", "visible": false } ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Average",
+                        "period": 600,
+                        "title": "Delete Meeting Duration",
+                        "yAxis": {
+                            "left": {
+                                "showUnits": false,
+                                "label": "MilliSeconds"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 0,
+                    "y": 48,
+                    "width": 6,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ { "expression": "m2-m1", "label": "Auth_Verification_Duration", "id": "e1", "region": "${AWS::Region}", "visible": false } ],
+                            [ { "expression": "IF(e1 > 0, e1, 0)", "label": "Auth Verification Duration", "id": "e2", "region": "${AWS::Region}" } ],
+                            [ "${NameSpace}", "Auth_Verification_StartTime", { "id": "m1", "visible": false } ],
+                            [ ".", "Auth_Verification_EndTime", { "id": "m2", "visible": false } ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Average",
+                        "period": 600,
+                        "title": "Auth Verification Duration",
+                        "yAxis": {
+                            "left": {
+                                "showUnits": false,
+                                "label": "MilliSeconds"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "metric",
+                    "x": 6,
+                    "y": 48,
+                    "width": 6,
+                    "height": 6,
+                    "properties": {
+                        "metrics": [
+                            [ { "expression": "(m2+m3+m4+m5+m6+m7)/m1*100", "label": "Failed", "id": "e1", "region": "${AWS::Region}", "color": "#d62728" } ],
+                            [ { "expression": "(m1-(m2+m3+m4+m5+m6+m7))/m1*100", "label": "Succeed", "id": "e2", "color": "#2ca02c", "region": "${AWS::Region}" } ],
+                            [ "AWS/Lambda", "Invocations", "FunctionName", "${NameSpace}-lambda", { "id": "m1", "visible": false } ],
+                            [ "${NameSpace}", "AccessDenied", { "id": "m2", "visible": false } ],
+                            [ ".", "Delete_Meeting_Fail", { "id": "m3", "visible": false } ],
+                            [ ".", "Schedule_Meeting_Fail", { "id": "m4", "visible": false } ],
+                            [ ".", "LoadMeetingPageFail", { "id": "m5", "visible": false } ],
+                            [ ".", "getMeetingList_pageNation_Fail", { "id": "m6", "visible": false } ],
+                            [ ".", "getMeetingList_Fail", { "id": "m7", "visible": false } ]
+                        ],
+                        "view": "timeSeries",
+                        "stacked": false,
+                        "region": "${AWS::Region}",
+                        "stat": "Sum",
+                        "period": 600,
+                        "title": "Lambda Succeed And Error Rate",
+                        "yAxis": {
+                            "left": {
+                                "showUnits": false,
+                                "label": "Percent"
+                            }
+                        }
+                    }
+                }
+            ]
+        }'
+
+# This is log dashboard template, and we don't add to our dashboard. Maybe it will enable in the future
+    # {
+    #     "type": "log",
+    #     "x": 0,
+    #     "y": 24,
+    #     "width": 24,
+    #     "height": 6,
+    #     "properties": {
+    #         "query": "SOURCE \"/aws/lambda/${NameSpace}-lambda\" | fields @timestamp, @message, @logStream, @requestId\n| filter @message like \"AccessDenied\"\n| sort @timestamp desc\n| limit 20",
+    #         "region": "${AWS::Region}",
+    #         "title": "Lambda AccessDenied Log Monitor",
+    #         "view": "table"
+    #     }
+    # }
+

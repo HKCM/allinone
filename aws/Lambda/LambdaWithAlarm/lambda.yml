@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: "Create a lambda function and sent alert when lambda have run time error"
+
+Parameters:
+  Word:
+    Type: String
+    Default: "World"
+  LambdaFunctionName:
+    Type: String
+    Default: "temporary-test"
+  SNSTopic:
+    Type: String
+    Default: "xxxxxx"
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      RoleName: !Sub '${AWS::StackName}-LambdaExecutionRole'
+      AssumeRolePolicyDocument: 
+        Version: 2012-10-17
+        Statement: 
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: 
+            - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: lambda-CreateLogGroup
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              Action:
+                - 'logs:CreateLogGroup'
+              Effect: Allow
+              Resource:
+                - !Sub 'arn:aws:logs:*:${AWS::AccountId}:*'
+        - PolicyName: lambda-basic-execution-role
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              Action:
+                - 'logs:CreateLogStream'
+                - 'logs:PutLogEvents'
+              Effect: Allow
+              Resource: 'arn:aws:logs:*:*:*'
+        - PolicyName: LookupTrailEvents
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              Action:
+                - 'cloudtrail:LookupEvents'
+              Effect: Allow
+              Resource: '*'
+      
+  LambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Runtime: python3.7
+      Environment:
+        Variables: 
+          Word: !Ref Word
+      Code:
+        ZipFile: 'No Code. Waiting update'
+      Handler: lambda.lambda_handler
+      Timeout: 60
+      MemorySize: 256
+      Role: !GetAtt 
+        - LambdaExecutionRole
+        - Arn
+
+  CloudWatch:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmName: "LambdaInvocationsAlarm"
+      ActionsEnabled: 'true'
+      AlarmActions: 
+        - !Ref SNSTopic
+      AlarmDescription: "An alert will be sent when lambda have run time error"
+      Namespace: AWS/Lambda
+      MetricName: Errors    #Throttles, Errors, ConcurrentExecutions
+      ComparisonOperator: GreaterThanThreshold    #GreaterThanThreshold, GreaterThanOrEqualToThreshold, LessThanThreshold, LessThanOrEqualToThreshold
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 2
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref LambdaFunctionName
+      Statistic: Sum    #Average, Minimum, Maximum, Sum, Sample Count, p99, p95, p90, p50, p10
+      TreatMissingData: notBreaching    #breaching, notBreaching, ignore, missing

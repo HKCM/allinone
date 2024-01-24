@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Environment Resources
+
+Parameters: 
+  Name: 
+    Description: Name of the SecurityGroup
+    Type: String
+    Default: 'test'
+  Environment: 
+    Description: Version
+    Type: String
+    AllowedValues: 
+      - dev
+      - stage
+      - prod
+  VPCID:
+    Type: String
+
+Mappings: 
+  NameChoose: 
+    test:
+      dev: test-dev
+      stage: test-stage
+      prod: test-prod
+
+
+Resources:
+  SG:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: 'This is test security group'
+      GroupName: !FindInMap
+        - NameChoose
+        - !Ref Name
+        - !Ref Environment
+      SecurityGroupIngress: 
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 29
+          CidrIp: 0.0.0.0/0
+      Tags: 
+        - Key: Name
+          Value: !FindInMap
+            - NameChoose
+            - !Ref Name
+            - !Ref Environment
+      VpcId: !Ref VPCID
+        #Fn::ImportValue: 
+        #  Fn::Sub: ${Name}-VPC
+
+Outputs: 
+  SGID: 
+    Description: SG ID
+    Export: 
+      Name: !Sub ${AWS::StackName}-SG
+    Value: !Ref SG

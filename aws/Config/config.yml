@@ -1,0 +1,300 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: This CloudFormation will Create Config
+
+Parameters:
+  DeliveryEmail:
+    Type: String
+    Default: 'xxxxxxxxxx@example.com'
+    Description: "Don't forget confirm SubscriptionConfirmation Email"
+  LambdaFunctionName:
+    Type: String
+  EnableCompliantMessage:
+    Type: String
+    AllowedValues: ['true','false']
+    Default: 'false'
+  SGonlyAllowedPort80443:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true','false']
+  RDSInstancePublicAccess:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true','false']
+  RDSMultiAZ:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true','false']
+  RDSSnapshotPublic:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true','false']
+  S3BucketEncryption:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true','false']
+  EBSSnapshotPublic:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true','false']
+  ACMExpiration:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true','false']
+  RequiredTags:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true','false']
+
+Conditions: 
+  EnableSGonlyAllowedPort80443: !Equals [ !Ref SGonlyAllowedPort80443, 'true' ]
+  EnableRDSInstancePublicAccess: !Equals [ !Ref RDSInstancePublicAccess, 'true' ]
+  EnableRDSMultiAZ: !Equals [ !Ref RDSMultiAZ, 'true' ]
+  EnableRDSSnapshotPublic: !Equals [ !Ref RDSSnapshotPublic, 'true' ]
+  EnableS3BucketEncryption: !Equals [ !Ref S3BucketEncryption, 'true' ]
+  EnableEBSSnapshotPublic: !Equals [ !Ref EBSSnapshotPublic, 'true' ]
+  EnableACMExpiration: !Equals [ !Ref ACMExpiration, 'true' ]
+  EnableRequiredTags: !Equals [ !Ref RequiredTags, 'true' ]
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      RoleName: !Sub '${AWS::StackName}-LambdaExecutionRole'
+      AssumeRolePolicyDocument: 
+        Version: 2012-10-17
+        Statement: 
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: 
+            - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: lambda-CreateLogGroup
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              Action:
+                - 'logs:CreateLogGroup'
+              Effect: Allow
+              Resource:
+                - !Sub 'arn:aws:logs:*:${AWS::AccountId}:*'
+        - PolicyName: lambda-basic-execution-role
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              Action:
+                - 'logs:CreateLogStream'
+                - 'logs:PutLogEvents'
+              Effect: Allow
+              Resource: 'arn:aws:logs:*:*:*'
+        - PolicyName: LookupTrailEvents
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              Action:
+                - 'cloudtrail:LookupEvents'
+              Effect: Allow
+              Resource: '*'
+        - PolicyName: SNSPublish
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              Action: 'sns:Publish'
+              Effect: Allow
+              Resource: !Sub 'arn:aws:sns:*:${AWS::AccountId}:AutomationNoncompliantRoleResource'
+      
+
+  LambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Runtime: python3.7
+      Environment:
+        Variables: 
+          EnableCompliantMessage: !Ref EnableCompliantMessage
+          TopicArn: !Ref SNSTopic
+      Code:
+        ZipFile: 'No Code. Waiting update'
+      Handler: Config/lambda.lambda_handler
+      Timeout: 60
+      MemorySize: 256
+      Role: !GetAtt 
+        - LambdaExecutionRole
+        - Arn
+  LambdaFunctionLogGroup:
+    Type: 'AWS::Logs::LogGroup'
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${LambdaFunctionName}'
+
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Properties: 
+      DisplayName: AutomationNoncompliantRoleResource
+      TopicName: AutomationNoncompliantRoleResource  
+  
+  SNSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties: 
+      Endpoint: !Ref DeliveryEmail
+      Protocol: email-json
+      TopicArn: !Ref SNSTopic
+
+  CloudWatchRole:
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: 'Lambda handles and sends config notification messages'
+      EventPattern: 
+        source: 
+          - "aws.config"
+        detail-type: 
+          - "Config Rules Compliance Change"
+        detail: 
+          messageType: 
+            - "ComplianceChangeNotification"
+      Name: ConfigNotification
+      State: ENABLED
+      Targets: 
+        - Arn: !GetAtt 
+          - LambdaFunction
+          - Arn
+          Id: "TargetFunctionV1"
+
+
+  # AWS Config Roles Setup
+  ConfigRuleForSGOnlyAllowed80443:
+    Type: AWS::Config::ConfigRule
+    Condition: EnableSGonlyAllowedPort80443
+    Properties: 
+      ConfigRuleName: vpc-sg-open-only-to-80-443
+      Description: 'Checks whether any security groups with inbound 0.0.0.0/0 have TCP or UDP ports accessible. The rule is NON_COMPLIANT when a security group with inbound 0.0.0.0/0 has a port accessible which is not specified in the rule parameters.'
+      InputParameters: 
+        authorizedTcpPorts: '80,443'
+      Scope: 
+        ComplianceResourceTypes:
+          - AWS::EC2::SecurityGroup
+      Source: 
+        Owner: AWS
+        SourceIdentifier: "VPC_SG_OPEN_ONLY_TO_AUTHORIZED_PORTS"
+
+  ConfigRuleForRDSInstancePublicAccess:
+    Type: AWS::Config::ConfigRule
+    Condition: EnableRDSInstancePublicAccess
+    Properties: 
+      ConfigRuleName: rds-instance-public-access
+      Description: 'Checks whether Amazon Relational Database Service (RDS) instance is not publicly accessible'
+      Scope: 
+        ComplianceResourceTypes:
+          - AWS::RDS::DBInstance
+      Source: 
+        Owner: AWS
+        SourceIdentifier: "RDS_INSTANCE_PUBLIC_ACCESS_CHECK"
+
+  ConfigRuleForRDSMultiAZ:
+    Type: AWS::Config::ConfigRule
+    Condition: EnableRDSMultiAZ
+    Properties: 
+      ConfigRuleName: rds-multi-az
+      Description: 'Checks whether Amazon Relational Database Service(RDS) database instance has high availability enabled.'
+      Scope: 
+        ComplianceResourceTypes:
+          - AWS::RDS::DBInstance
+      Source: 
+        Owner: AWS
+        SourceIdentifier: "RDS_MULTI_AZ_SUPPORT"
+
+  ConfigRuleForRDSSnapshotPublic:
+    Type: AWS::Config::ConfigRule
+    Condition: EnableRDSSnapshotPublic
+    Properties: 
+      ConfigRuleName: rds-snapshots-public
+      Description: 'Checks whether Amazon Relational Database Service (RDS) instance is not publicly accessible'
+      Scope: 
+        ComplianceResourceTypes:
+          - AWS::RDS::DBSnapshot
+      Source: 
+        Owner: AWS
+        SourceIdentifier: "RDS_SNAPSHOTS_PUBLIC_PROHIBITED"
+  
+  ConfigRuleForS3BucketEncryption:
+    Type: AWS::Config::ConfigRule
+    Condition: EnableEBSSnapshotPublic
+    Properties: 
+      ConfigRuleName: s3-bucket-server-side-encryption
+      Description: 'Checks that your Amazon S3 bucket either has S3 default encryption enabled or that the S3 bucket policy explicitly denies put-object requests without server side encryption.'
+      Scope: 
+        ComplianceResourceTypes:
+          - AWS::S3::Bucket
+      Source: 
+        Owner: AWS
+        SourceIdentifier: "S3_BUCKET_SERVER_SIDE_ENCRYPTION_ENABLED"
+
+  ConfigRuleForEBSSnapshotPublic:
+    Type: AWS::Config::ConfigRule
+    Condition: EnableEBSSnapshotPublic
+    Properties: 
+      ConfigRuleName: ebs-snapshot-public-restorable
+      Description: 'Checks whether Amazon Elastic Block Store (Amazon EBS) snapshots are not publicly restorable. '
+      Source: 
+        Owner: AWS
+        SourceIdentifier: "EBS_SNAPSHOT_PUBLIC_RESTORABLE_CHECK"
+
+  ConfigRuleForACMExpiration:
+    Type: AWS::Config::ConfigRule
+    Condition: EnableACMExpiration
+    Properties: 
+      ConfigRuleName: acm-certificate-expiration
+      Description: 'Checks whether ACM Certificates in your account are marked for expiration within the specified number of days. Certificates provided by ACM are automatically renewed. ACM does not automatically renew certificates that you import.'
+      InputParameters: 
+        daysToExpiration: 30
+      Scope: 
+        ComplianceResourceTypes:
+          - AWS::ACM::Certificate
+      Source: 
+        Owner: AWS
+        SourceIdentifier: "ACM_CERTIFICATE_EXPIRATION_CHECK"
+
+  ConfigRuleForRequiredTags:
+    Type: AWS::Config::ConfigRule
+    Condition: EnableRequiredTags
+    Properties: 
+      ConfigRuleName: required-tags-for-all-resources
+      Description: 'Checks whether your resources have the tags that you specify. '
+      InputParameters: 
+        tag1Key: 'Team'
+        tag1Value: 'xxxx'
+        tag2Key: 'Department'
+        tag2Value: 'dev'
+        tag3Key: 'Name'
+        tag4Key: 'Environemnt'
+      Scope: 
+        ComplianceResourceTypes:
+          - AWS::CloudFormation::Stack
+          - AWS::DynamoDB::Table
+          - AWS::S3::Bucket
+          - AWS::EC2::Instance
+          - AWS::EC2::InternetGateway
+          - AWS::EC2::NetworkAcl
+          - AWS::EC2::NetworkInterface
+          - AWS::EC2::RouteTable
+          - AWS::EC2::SecurityGroup
+          - AWS::EC2::Subnet
+          - AWS::EC2::Volume
+          - AWS::EC2::VPC
+          - AWS::EC2::EIP
+          - AWS::ElasticLoadBalancing::LoadBalancer
+          - AWS::ElasticLoadBalancingV2::LoadBalancer
+          - AWS::RDS::DBInstance
+          - AWS::RDS::DBSecurityGroup
+          - AWS::RDS::DBSnapshot
+          - AWS::RDS::DBSubnetGroup
+          - AWS::RDS::EventSubscription
+      Source: 
+        Owner: AWS
+        SourceIdentifier: "REQUIRED_TAGS"
+
+
+
+
+
+    

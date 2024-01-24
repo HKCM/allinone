@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Environment Resources
+
+Parameters: 
+  Name: 
+    Description: Name of the VPC
+    Type: String
+    Default: 'test'
+  Environment: 
+    Description: Version
+    Type: String
+    Default: 'dev'
+    AllowedValues: 
+      - dev
+      - stage
+      - prod
+  CIDR:
+    Description: VPC CIDR
+    Type: String
+    Default: '10.1.0.0/16'
+
+Mappings: 
+  NameChoose: 
+    test:
+      dev: test-dev
+      stage: test-stage
+      prod: test-prod
+
+Resources: 
+  vpc:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref CIDR
+      EnableDnsSupport: True
+      InstanceTenancy: default
+      Tags: 
+        - Key: Name
+          Value: !FindInMap
+            - NameChoose
+            - !Ref Name
+            - !Ref Environment
+
+Outputs: 
+  VPCId: 
+    Description: VPC ID
+    Export: 
+      Name: !Sub ${Name}-VPC
+    Value: !Ref vpc

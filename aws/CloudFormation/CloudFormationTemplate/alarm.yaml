@@ -1,0 +1,20 @@
+  LambdaErrorAlarm:
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      ActionsEnabled: 'true'
+      AlarmActions:
+        - !Ref SNSTopic
+      Namespace: AWS/Lambda
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Name
+      MetricName: Errors
+      ComparisonOperator: GreaterThanThreshold
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 1
+      Statistic: Sum
+      TreatMissingData: notBreaching
+
+
+# https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/aws-properties-cw-alarm.html

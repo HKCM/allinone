@@ -1,0 +1,15 @@
+# https://prometheus.io/docs/alerting/latest/configuration/
+global:
+  resolve_timeout: 5h
+  slack_api_url: 'https://hooks.slack.com/services/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'
+
+route:
+  receiver: 'slack'
+  group_interval: 1m
+  repeat_interval: 2m
+
+receivers:
+  - name: 'slack'
+    slack_configs:
+    - channel: '#alert'
+      send_resolved: true

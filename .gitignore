@@ -1,0 +1,14 @@
+target.md
+test
+.pdf
+.venv
+
+/job
+
+# Todolist
+/todolist.md
+/todo*
+
+.DS_Store
+.vscode
+.test

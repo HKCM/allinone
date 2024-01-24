@@ -1,0 +1,23 @@
+https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/conditions-section-structure.html
+
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Only create resource when Environment as "prod" or "stage"
+
+Parameters:
+  NameSpace:
+    Type: String
+    Default: 'test'
+  Environment:
+    Type: String
+    Default: 'prod'
+Conditions:
+  CreateDevResources: !Or [!Equals [ !Ref Environment, 'prod' ], !Equals [ !Ref Environment, 'stage' ]]
+
+Resources:
+  Table1:
+    DeletionPolicy: Retain
+    Type: 'AWS::DynamoDB::Table'
+    Condition: CreateDevResources
+    Properties:
+      TableName: !Sub '${NameSpace}-database'

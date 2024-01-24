@@ -1,0 +1,166 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: This CloudFormation will Create CloudFront, S3 bucket, API Gateway and Lambda execution role for Teams project
+
+Parameters:
+  ACMARN:
+    Type: String
+  ALIASE:
+    Type: String
+  NameSpace:
+    Type: String
+  S3LoggingBucket:
+    Type: String
+  CloudFrontBucket:
+    Type: String
+  APIGatewayOriginPath:
+    Type: String
+  Endpoint:
+    Type: String
+
+Resources:
+  # CloudFront
+  CloudfrontResource:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Logging:
+          Bucket: !Ref CloudFrontBucket
+          Prefix: !Sub '${NameSpace}-CloudFront'
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+            - PUT
+            - PATCH
+            - POST
+            - DELETE
+          Compress: true
+          ForwardedValues:
+            QueryString: true
+            Cookies:
+              Forward: 'all'
+          TargetOriginId: !Sub '${NameSpace}-API-endpoint'
+          ViewerProtocolPolicy: redirect-to-https
+        Aliases:
+          - !Ref ALIASE
+        ViewerCertificate:
+          MinimumProtocolVersion: 'TLSv1.2_2018'
+          AcmCertificateArn: !Ref ACMARN
+          SslSupportMethod: 'sni-only'
+        CacheBehaviors:
+          - AllowedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+            PathPattern: 'assets/*'
+            TargetOriginId: !Sub '${NameSpace}-static'
+            ViewerProtocolPolicy: redirect-to-https
+        Comment: !Sub '[${NameSpace}] This is CloudFront Resources for ${NameSpace}'
+        Enabled: true
+        PriceClass: 'PriceClass_100'
+        HttpVersion: 'http2'
+        Origins:
+          - DomainName:
+              Fn::Join:
+                - ''
+                - - !Sub '${NameSpace}-static'
+                  - '.s3.amazonaws.com'
+            Id: !Sub '${NameSpace}-static'
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+          - CustomOriginConfig:
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols:
+                - 'TLSv1'
+            OriginPath: !Ref APIGatewayOriginPath
+            DomainName:
+              Fn::Join:
+                - ''
+                - - !Sub '${RestApi}'
+                  - !Sub '.execute-api.${AWS::Region}.amazonaws.com'
+            Id: !Sub '${NameSpace}-API-endpoint'
+
+  # API Gateway
+  RestApi:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: !Sub '${NameSpace}-api'
+      BinaryMediaTypes:
+        - '*~1*'
+
+  SecretManager:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: !Sub ${NameSpace}
+      Name: !Sub '${NameSpace}-secret'
+      SecretString: !Ref AWS::NoValue
+
+  # Deployment Bucket
+  DeploymentBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${NameSpace}-deployment-bucket'
+      LoggingConfiguration:
+        DestinationBucketName: !Ref S3LoggingBucket
+        LogFilePrefix: !Sub '${NameSpace}-S3'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: 'AES256'
+
+  # StaticSite Bucket
+  StaticSite:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${NameSpace}-static'
+      LoggingConfiguration:
+        DestinationBucketName: !Ref S3LoggingBucket
+        LogFilePrefix: !Sub '${NameSpace}-static'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: 'AES256'
+      AccelerateConfiguration:
+        AccelerationStatus: 'Enabled'
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
+
+  # SNS
+  SNSForCloudformation:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Sub '${NameSpace}-cloudformation-events-subscription'
+      TopicName: !Sub '${NameSpace}-cloudformation-events-subscription'
+
+  SNSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Ref Endpoint
+      Protocol: email
+      TopicArn: !Ref 'SNSForCloudformation'
+
+Outputs:
+  RestApiID:
+    Value: !Ref RestApi
+    Export:
+      Name: !Sub '${NameSpace}:RestApiID'
+
+  RootResourceId:
+    Value: !GetAtt RestApi.RootResourceId
+    Export:
+      Name: !Sub '${NameSpace}:RootResourceId'
+
+  CloudFrontId:
+    Value: !Ref CloudfrontResource
+    Export:
+      Name: !Sub '${NameSpace}:CloudFrontID'

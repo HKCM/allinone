@@ -1,0 +1,100 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: "创建一个Lambda函数,并用CloudWatch每10分钟调用一次"
+
+Parameters:
+  Word:
+    Type: String
+    Default: "World"
+  LambdaFunctionName:
+    Type: String
+    Default: "emporary-test"
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      RoleName: !Sub '${AWS::StackName}-LambdaExecutionRole'
+      AssumeRolePolicyDocument: 
+        Version: 2012-10-17
+        Statement: 
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: 
+            - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: lambda-CreateLogGroup
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              Action:
+                - 'logs:CreateLogGroup'
+              Effect: Allow
+              Resource:
+                - !Sub 'arn:aws:logs:*:${AWS::AccountId}:*'
+        - PolicyName: lambda-basic-execution-role
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              Action:
+                - 'logs:CreateLogStream'
+                - 'logs:PutLogEvents'
+              Effect: Allow
+              Resource: 'arn:aws:logs:*:*:*'
+        - PolicyName: LookupTrailEvents
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              Action:
+                - 'cloudtrail:LookupEvents'
+              Effect: Allow
+              Resource: '*'
+      
+  LambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: !Ref LambdaFunctionName
+      Runtime: python3.7
+      Environment:
+        Variables: 
+          Word: !Ref Word
+      Code:
+        ZipFile: 'No Code. Waiting update'
+      Handler: lambda.lambda_handler
+      Timeout: 60
+      MemorySize: 256
+      Role: !GetAtt 
+        - LambdaExecutionRole
+        - Arn
+
+  LambdaFunctionLogGroup:
+    Type: 'AWS::Logs::LogGroup'
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${LambdaFunctionName}'
+
+  ScheduledRule: 
+    Type: AWS::Events::Rule
+    Properties: 
+      Description: "ScheduledRule"
+      ScheduleExpression: "rate(10 minutes)"
+      State: "ENABLED"
+      Targets: 
+        - 
+          Arn: 
+            Fn::GetAtt: 
+              - "LambdaFunction"
+              - "Arn"
+          Id: "TargetFunctionV1"
+
+  PermissionForEventsToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: 
+        Ref: "LambdaFunction"
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: 
+        Fn::GetAtt: 
+          - "ScheduledRule"
+          - "Arn"

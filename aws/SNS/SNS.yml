@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: 'Description'
+
+Parameters:
+  Endpoint:
+    Type: String
+
+Resources:
+    SNSForCloudformation:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Sub '${NameSpace}-cloudformation-events-subscription'
+      Subscription:
+        - Endpoint: !Ref Endpoint
+          Protocol: EMAIL-JSON
+      TopicName: !Sub '${NameSpace}-cloudformation-events-subscription'

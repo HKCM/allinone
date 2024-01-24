@@ -1,0 +1,46 @@
+# 如果单个模板包含多个具有索引的 DynamoDB 表,则必须包含依赖关系,
+# 以使表按顺序创建。DynamoDB 对二级索引处于创建状态的表的数量有限制。
+# 如果同时创建多个带索引的表,则 DynamoDB 会返回错误,并且堆栈操作将失败。
+# DependsOn: "myFirstDDBTable"
+
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: This template will Create source DynamoDB table.
+
+Parameters:
+  SourceTableName:
+    Type: String
+    Default: 'Music'
+
+Resources:
+  Table1:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Sub '${SourceTableName}'
+      BillingMode: 'PAY_PER_REQUEST'
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: True
+      AttributeDefinitions:
+        - AttributeName: 'AlbumTitle'
+          AttributeType: 'S'
+        - AttributeName: 'Artist'
+          AttributeType: 'S'
+        - AttributeName: 'SongTitle'
+          AttributeType: 'S'
+      KeySchema:
+        - AttributeName: 'AlbumTitle'
+          KeyType: 'HASH'
+        - AttributeName: 'Artist'
+          KeyType: 'RANGE'
+      LocalSecondaryIndexes:
+        - IndexName: 'AlbumTitleSongTitle'
+          KeySchema:
+            - AttributeName: 'AlbumTitle'
+              KeyType: 'HASH'
+            - AttributeName: 'SongTitle'
+              KeyType: 'RANGE'
+          Projection:
+            ProjectionType: ALL
+
+
+

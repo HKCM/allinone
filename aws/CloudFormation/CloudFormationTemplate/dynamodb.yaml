@@ -1,0 +1,109 @@
+# 如果单个模板包含多个具有索引的 DynamoDB 表,则必须包含依赖关系,
+# 以使表按顺序创建。DynamoDB 对二级索引处于创建状态的表的数量有限制。
+# 如果同时创建多个带索引的表,则 DynamoDB 会返回错误,并且堆栈操作将失败。
+# DependsOn: "myFirstDDBTable"
+
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: This CloudFormation will Create DynamoDB
+
+Parameters:
+  NameSpace:
+    Type: String
+    Default: 'test'
+  Environment:
+    Type: String
+    Default: 'test'
+Conditions:
+  CreateDevResources: !Not [!Or [!Equals [ !Ref Environment, 'prod' ], !Equals [ !Ref Environment, 'stage' ]]]
+
+Resources:
+  Table1:
+    # DeletionPolicy: Retain
+    Type: 'AWS::DynamoDB::Table'
+    Condition: CreateDevResources
+    Properties:
+      TableName: !Sub '${NameSpace}-database'
+      BillingMode: 'PAY_PER_REQUEST'
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: True
+      AttributeDefinitions:
+        - AttributeName: 'courseId'
+          AttributeType: 'S'
+        - AttributeName: 'meetingId'
+          AttributeType: 'S'
+        - AttributeName: 'topic'
+          AttributeType: 'S'
+        - AttributeName: 'startTime'
+          AttributeType: 'N'
+        - AttributeName: 'endTime'
+          AttributeType: 'N'
+      KeySchema:
+        - AttributeName: 'courseId'
+          KeyType: 'HASH'
+        - AttributeName: 'meetingId'
+          KeyType: 'RANGE'
+      LocalSecondaryIndexes:
+        - IndexName: 'startTime'
+          KeySchema:
+            - AttributeName: 'courseId'
+              KeyType: 'HASH'
+            - AttributeName: 'startTime'
+              KeyType: 'RANGE'
+          Projection:
+            ProjectionType: ALL
+        - IndexName: 'endTime'
+          KeySchema:
+            - AttributeName: 'courseId'
+              KeyType: 'HASH'
+            - AttributeName: 'endTime'
+              KeyType: 'RANGE'
+          Projection:
+            ProjectionType: ALL
+        - IndexName: 'topicIndex'
+          KeySchema:
+            - AttributeName: 'courseId'
+              KeyType: 'HASH'
+            - AttributeName: 'topic'
+              KeyType: 'RANGE'
+          Projection:
+            ProjectionType: ALL
+      GlobalSecondaryIndexes:
+        - IndexName: 'GSI'
+          KeySchema: 
+            - AttributeName: 'startTime'
+              KeyType: 'HASH'
+          Projection:
+            ProjectionType: ALL
+
+  # TableReadCapacity:
+  #   Type: 'AWS::CloudWatch::Alarm'
+  #   Properties:
+  #     ActionsEnabled: 'true'
+  #     Namespace: AWS/DynamoDB
+  #     MetricName: ConsumedReadCapacityUnits
+  #     ComparisonOperator: GreaterThanThreshold
+  #     Period: 60
+  #     EvaluationPeriods: 1
+  #     Threshold: 3.5
+  #     Dimensions:
+  #       - Name: TableName
+  #         Value: !Ref Table
+  #     Statistic: Average
+  #     TreatMissingData: notBreaching
+      
+  # TableWriteCapacity:
+  #   Type: 'AWS::CloudWatch::Alarm'
+  #   Properties:
+  #     ActionsEnabled: 'true'
+  #     Namespace: AWS/DynamoDB
+  #     MetricName: ConsumedWriteCapacityUnits
+  #     ComparisonOperator: GreaterThanThreshold
+  #     Period: 60
+  #     EvaluationPeriods: 1
+  #     Threshold: 3.5
+  #     Dimensions:
+  #       - Name: TableName
+  #         Value: !Ref Table
+  #     Statistic: Average
+  #     TreatMissingData: notBreaching

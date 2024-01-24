@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Environment Resources
+
+Parameters: 
+  Name: 
+    Description: Name of the Instance
+    Type: String
+    Default: 'test'
+  Environment: 
+    Description: Version
+    Type: String
+    AllowedValues: 
+      - dev
+      - stage
+      - prod
+  SGID:
+    Type: String
+  SubnetID:
+    Type: String
+
+Mappings: 
+  NameChoose: 
+    test:
+      dev: test-dev
+      stage: test-stage
+      prod: test-prod
+
+Resources: 
+    MyEC2Instance: 
+      Type: AWS::EC2::Instance
+      Properties: 
+        ImageId: "ami-0d5d9d301c853a04a"
+        InstanceType: 't2.micro'
+        KeyName: "test"
+        SecurityGroupIds: 
+          - !Ref SGID
+          - 'sg-0fb1ef3d75be0926b'
+          #- Fn::ImportValue: 
+          #    Fn::Sub: ${Name}-SG
+        SubnetId: !Ref SubnetID
+          #Fn::ImportValue: 
+          #  Fn::Sub: ${Name}-Subnet
+        Tags:
+          - Key: Name
+            Value: !FindInMap
+              - NameChoose
+              - !Ref Name
+              - !Ref Environment
+
+Outputs: 
+  InsatnceId: 
+    Description: Instance ID
+    Export: 
+      Name: !Sub ${AWS::StackName}-Instance
+    Value: !Ref MyEC2Instance

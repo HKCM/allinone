@@ -1,0 +1,256 @@
+Description: MSTeams IAM Policy
+
+Parameters:
+  ProjectPrefix:
+    Type: String
+  Stage:
+    Type: String
+  NameSpace:
+    Type: String
+
+Resources:
+  DevOpsRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Sub '${NameSpace}-devops'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - 'arn:aws:iam::123456789:user/ci'
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - !Ref IAM
+        - !Ref BoundaryPolicy
+  IAM:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      ManagedPolicyName: !Sub '${NameSpace}-iam'
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 'iam:CreateRole'
+            Effect: Deny
+            Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/${NameSpace}-*'
+            Condition:
+              StringNotEquals:
+                'iam:PermissionsBoundary': !Ref BoundaryPolicy
+          - Action:
+              - 'iam:CreateRole'
+              - 'iam:DeleteRole'
+              - 'iam:GetRole'
+              - 'iam:PutRolePolicy'
+              - 'iam:PassRole'
+              - 'iam:AttachRolePolicy'
+              - 'iam:DetachRolePolicy'
+              - 'iam:DeleteRolePolicy'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:role/${NameSpace}-devops'
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:role/${NameSpace}-devops/${NameSpace}-ci-session'
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:role/${NameSpace}-${AWS::Region}-lambdaRole'
+          - Action:
+              - 'iam:CreatePolicy'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:policy/${NameSpace}-boundary'
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:policy/${NameSpace}-iam'
+              - !Sub 'arn:aws:iam::${AWS::AccountId}:policy/${NameSpace}-invoke-lambda'
+          - Action:
+              - 'SNS:*'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:sns:${AWS::Region}:${AWS::AccountId}:${NameSpace}-cloudformation-events-subscription'
+  BoundaryPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      ManagedPolicyName: !Sub '${NameSpace}-boundary'
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: 'LogsDescribe'
+            Action:
+              - 'logs:DescribeLogGroups'
+            Effect: Allow
+            Resource: '*'
+
+          - Sid: 'EC2Network'
+            Action:
+              - 'ec2:DescribeSecurityGroups'
+              - 'ec2:DescribeNetworkInterfaces'
+              - 'ec2:CreateNetworkInterface'
+              - 'ec2:DeleteNetworkInterface'
+              - 'ec2:DescribeSubnets'
+              - 'ec2:DescribeVpcs'
+            Effect: Allow
+            Resource: '*'
+            Condition:
+              ArnLike:
+                'aws:PrincipalArn': 'arn:aws:iam::123456789:*'
+
+          - Sid: 'Logs'
+            Action: 'logs:*'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:logs:*:${AWS::AccountId}:log-group:${NameSpace}*'
+              - !Sub 'arn:aws:logs:*:${AWS::AccountId}:log-group:${NameSpace}*:*'
+              - !Sub 'arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/${NameSpace}-*'
+              - !Sub 'arn:aws:logs:*:${AWS::AccountId}:log-group:/aws/lambda/${NameSpace}-*:*'
+
+          - Sid: 'DynamoDB'
+            Action: 'dynamodb:*'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:dynamodb:*:${AWS::AccountId}:table/${NameSpace}-users'
+
+          - Sid: 'CloudFormation'
+            Action:
+              - 'cloudformation:CreateStack'
+              - 'cloudformation:CreateChangeSet'
+              - 'cloudformation:UpdateStack'
+              - 'cloudformation:ExecuteChangeSet'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/${NameSpace}'
+              - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/${NameSpace}/*'
+              - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/${NameSpace}-pre-infra'
+              - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/${NameSpace}-pre-infra/*'
+
+          - Sid: 'CloudFormationSummary'
+            Action:
+              - 'cloudformation:GetTemplateSummary'
+              - 'Cloudformation:ListStackResources'
+              - 'cloudformation:ListChangeSets'
+              - 'cloudformation:ListStacks'
+              - 'cloudformation:DescribeChangeSet'
+              - 'cloudformation:DescribeStackEvents'
+              - 'cloudformation:DescribeStacks'
+              - 'cloudformation:DescribeStackResource'
+              - 'cloudformation:ValidateTemplate'
+            Effect: Allow
+            Resource: '*'
+
+          - Sid: 'Lambda'
+            Action: 'lambda:*'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:lambda:*:${AWS::AccountId}:function:${NameSpace}-entry'
+              - !Sub 'arn:aws:lambda:*:${AWS::AccountId}:function:${NameSpace}-entry:provisioned'
+              - !Sub 'arn:aws:lambda:*:${AWS::AccountId}:function:${NameSpace}-entry:*'
+
+          - Sid: 'LambdaInvokeFunction'
+            Action: 'lambda:InvokeFunction'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:lambda:*:${AWS::AccountId}:function:${ProjectPrefix}-locale-${Stage}-*'
+              - !Sub 'arn:aws:lambda:*:${AWS::AccountId}:function:${ProjectPrefix}-meeting-${Stage}-*'
+              - !Sub 'arn:aws:lambda:*:${AWS::AccountId}:function:${ProjectPrefix}-conference-${Stage}-*'
+              - !Sub 'arn:aws:lambda:*:${AWS::AccountId}:function:${ProjectPrefix}-auth-${Stage}-*'
+
+          - Sid: 'S3Bucket'
+            Action:
+              - 's3:ListBucket'
+              - 's3:GetBucketLocation'
+              - 's3:ListAllMyBuckets'
+              - 's3:GetBucketTagging'
+              - 's3:PutBucketTagging'
+              - 's3:PutBucketAcl'
+              - 's3:GetBucketAcl'
+              - 's3:GetBucketCORS'
+              - 's3:PutBucketCORS'
+              - 's3:PutAccelerateConfiguration'
+              - 's3:GetAccelerateConfiguration'
+              - 's3:PutEncryptionConfiguration'
+              - 's3:PutBucketLogging'
+              - 's3:GetBucketLogging'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:s3:::${NameSpace}-deployment-bucket'
+              - !Sub 'arn:aws:s3:::${NameSpace}-static'
+
+          - Sid: 'SecretManager'
+            Action:
+              - 'secretsmanager:GetSecretValue'
+              - 'secretsmanager:DeleteSecret'
+              - 'secretsmanager:CreateSecret'
+              - 'secretsmanager:TagResource'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:secretsmanager:*:${AWS::AccountId}:secret:${NameSpace}-secret-*'
+
+          - Sid: 'SystemManager'
+            Action:
+              - 'ssm:GetParameter'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:ssm:*:${AWS::AccountId}:parameter/aws/reference/secretsmanager/${NameSpace}-secret*'
+
+          - Sid: 'S3Object'
+            Action:
+              - 's3:PutObject'
+              - 's3:GetObject'
+              - 's3:PutObjectAcl'
+              - 's3:GetObjectAcl'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:s3:::${NameSpace}-deployment-bucket/*'
+              - !Sub 'arn:aws:s3:::${NameSpace}-static/*'
+
+          - Sid: 'RestAPIStages'
+            Action: 'apigateway:*'
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ''
+                  - - !Sub 'arn:aws:apigateway:*::/restapis/'
+                    - Fn::ImportValue: !Sub '${NameSpace}:RestApiID'
+                    - '*'
+                    
+          - Sid: 'APIGatewayTags'
+            Action: 'apigateway:PUT'
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ''
+                  - - !Sub 'arn:aws:apigateway:${AWS::Region}::/tags/arn%3Aaws%3Aapigateway%3A*%3A%3A%2Frestapis%2F*' # wired stuff
+                    - '*'
+              - Fn::Join:
+                  - ''
+                  - - !Sub 'arn:aws:apigateway:*::/tags/arn:aws:apigateway:*::/restapis/'
+                    - '*'
+
+          - Sid: 'Alarms'
+            Action:
+              - 'cloudwatch:DescribeAlarms'
+              - 'cloudwatch:PutMetricAlarm'
+            Effect: Allow
+            Resource: '*'
+
+          - Sid: 'Xray'
+            Action:
+              - 'xray:PutTraceSegments'
+              - 'xray:PutTelemetryRecords'
+            Effect: Allow
+            Resource: '*'
+
+          - Sid: 'CloudFrontAction'
+            Action:
+              - 'cloudfront:*'
+            Effect: Allow
+            Resource:
+              Fn::Join:
+                - ''
+                - - !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/'
+                  - Fn::ImportValue: !Sub '${NameSpace}:CloudFrontID'
+
+          - Sid: 'SNS'
+            Action:
+              - 'sns:Publish'
+            Effect: Allow
+            Resource:
+              - !Sub 'arn:aws:sns:*:${AWS::AccountId}:${ProjectPrefix}-sns-topics-${Stage}-data-analytics-track-topic'
+              - !Sub 'arn:aws:sns:*:${AWS::AccountId}:${ProjectPrefix}-sns-topics-${Stage}-data-analytics-identify-topic'
