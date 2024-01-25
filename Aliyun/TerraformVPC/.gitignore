@@ -1,0 +1,7 @@
+.terraform/
+.idea/
+*.tfstate
+*.tfstate*
+terraform.tfvars
+
+credential.bash

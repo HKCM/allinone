@@ -44,24 +44,11 @@ bin/kafka-server-stop.sh
 # 创建Topic
 bin/kafka-topics.sh --create --replication-factor 2 --bootstrap-server localhost:9092 --partitions 3 --topic test2
 
+# 列出Topic
+bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+
 # 描述Topic
 bin/kafka-topics.sh --describe --bootstrap-server localhost:9092 --topic test1
-
-# 扩容partition,扩容后producer需要重连以将消息发送到新的partition
-bin/kafka-topics.sh --alter --bootstrap-server localhost:9092 --topic test1 --partitions 2
-
-cat > topic.json << EOF
-{
-    "topics":[
-        {
-            "topic": "test1"
-        }
-    ],
-    "version": 1
-}
-EOF
-
-bin/kafka-reassign-partitions.sh --topics-to-move-json-file topic.json --broker-list "1" --generate --bootstrap-server localhost:9092
 
 # 修改Topic保留时间
 /bin/kafka-configs.sh --alter \
@@ -74,7 +61,6 @@ bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 -
 
 # 删除Topic
 bin/kafka-topics.sh --delete --bootstrap-server localhost:9092 --topic test1
-
 ```
 
 # producer
@@ -83,7 +69,7 @@ bin/kafka-topics.sh --delete --bootstrap-server localhost:9092 --topic test1
 bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic test1
 
 bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic test1 --property parse.key=true
-id123   messages
+id123   messages # 使用tab分隔
 id124   another_massages
 
 # 持续发送消息
