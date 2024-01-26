@@ -149,3 +149,14 @@ PasswordAuthentication no
 ```bash
 sshd -t # 检测语法
 ```
+
+## 日志
+
+```bash
+sudo grep sshd /var/log/auth.log
+# 查看最后 500 行里面的 sshd 条目
+sudo tail -n 500 /var/log/auth.log | grep sshd
+sudo tail -f -n 500 /var/log/auth.log | grep sshd
+
+lastlog
+```
