@@ -1,4 +1,4 @@
-https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html
+# https://docs.aws.amazon.com/zh_cn/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html
 
 Parameters:
   KeyName:
