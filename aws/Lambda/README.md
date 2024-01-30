@@ -1,3 +1,9 @@
+# Lambda
+
+Example docs:
+
+https://github.com/awsdocs/aws-lambda-developer-guide/blob/main/sample-apps/rds-mysql/template.yml
+
 # Trigger
 
 https://docs.aws.amazon.com/zh_cn/lambda/latest/dg/lambda-services.html

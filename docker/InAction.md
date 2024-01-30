@@ -1,12 +1,18 @@
+
+```bash
 docker run -d -p 80:80 docker/getting-started
+
+```
 
 创建网络。
 
-$ docker network create todo-app
+```bash
+docker network create todo-app
+```
 
 启动一个MySQL容器并将其连接到网络
 ```shell
-$ docker run -d \
+docker run -d \
     --network todo-app --network-alias mysql \
     -v todo-mysql-data:/var/lib/mysql \
     -e MYSQL_ROOT_PASSWORD=secret \
@@ -14,9 +20,10 @@ $ docker run -d \
     mysql:5.7
 ```
 
-使用nicolaka / netshoot映像启动一个新容器。确保将其连接到同一网络。
-```
-$ docker run -it --network todo-app nicolaka/netshoot
+使用nicolaka / netshoot映像启动一个新容器。确保将其连接到同一网络
+
+```shell
+docker run -it --network todo-app nicolaka/netshoot
 
 # dig mysql
 ```
@@ -27,7 +34,7 @@ $ docker run -it --network todo-app nicolaka/netshoot
 # MYSQL_USER -用于连接的用户名
 # MYSQL_PASSWORD -用于连接的密码
 # MYSQL_DB -连接后要使用的数据库
-$ docker run -dp 3000:3000 \
+docker run -dp 3000:3000 \
   -w /app -v ${PWD}:/app \
   --network todo-app \
   -e MYSQL_HOST=mysql \
@@ -41,7 +48,7 @@ $ docker run -dp 3000:3000 \
 查看容器(docker logs <container-id>)的日志,则应该看到一条消息,表明它正在使用mysql数据库。
 ```shell
 # Previous log messages omitted
-$ nodemon src/index.js
+nodemon src/index.js
 [nodemon] 1.19.2
 [nodemon] to restart at any time, enter `rs`
 [nodemon] watching dir(s): *.*

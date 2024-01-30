@@ -1,5 +1,5 @@
 
-### 描述: 一些docker的小技巧
+# docker技巧
 
 #### 查找docker container的日志文件位置
 ```shell
@@ -50,4 +50,53 @@ $ docker exec -ti --rm <image_id> bash
 查找docker日志文件位置
 ```shell
 docker inspect --format='{{.LogPath}}'
+```
+
+## 更改docker的默认存储目录
+
+
+
+方式一: 修改docker配置文件
+```bash
+sudo vim /etc/docker/daemon.json
+{
+    "data-root": "/data/var/lib/docker"
+}
+
+sudo systemctl daemon-reload
+sudo systemctl restart docker.service
+```
+
+方式二: 修改docker的启动文件
+```bash
+sudo vim /lib/systemd/system/docker.service
+```
+
+```ini
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+After=network-online.target docker.socket firewalld.service containerd.service time-set.target
+Wants=network-online.target containerd.service
+Requires=docker.socket
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock --data-root=/data/docker #指定数据目录
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutStartSec=0
+RestartSec=2
+Restart=always
+StartLimitBurst=3
+StartLimitInterval=60s
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+Delegate=yes
+KillMode=process
+OOMScoreAdjust=-500
+
+[Install]
+WantedBy=multi-user.target
 ```
