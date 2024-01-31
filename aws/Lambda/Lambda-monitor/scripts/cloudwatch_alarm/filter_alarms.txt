@@ -1,0 +1,4 @@
+EC2-k8s_spot-StatusCheckFailed_Instance-i-09e15981a1f831e9d
+EC2-k8s_spot-StatusCheckFailed_Instance-i-0c6b4d1b7827c8d68
+EC2-k8s_spot-StatusCheckFailed_System-i-09e15981a1f831e9d
+EC2-k8s_spot-StatusCheckFailed_System-i-0c6b4d1b7827c8d68

@@ -1,0 +1,16 @@
+{
+    "Records": [
+      {
+        "EventSource": "aws.sns",
+        "EventVersion": "1.0",
+        "EventSubscriptionArn": "arn:aws:sns:us-east-1:123456789012:ExampleTopic",
+        "Sns": {
+          "Type": "Notification",
+          "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
+          "TopicArn": "arn:aws:sns:us-east-1:123456789012:ExampleTopic",
+          "Subject": "AWS Cost Anomaly Detection Notification",
+          "Message": "{\"version\":\"0\",\"id\":\"12345678-1234-1234-1234-123456789012\",\"detail-type\":\"AWS Cost Anomaly Detection Notification\",\"source\":\"aws.cost-anomaly-notification\",\"account\":\"123456789012\",\"time\":\"2023-10-15T10:00:00Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"anomalyId\":\"1b794f27-e520-43ad-951c-e27639df7881\",\"accountName\":\"example-account\",\"anomalyScore\":{\"currentScore\":0.14,\"maxScore\":0.14},\"anomalyStartDate\":\"2023-10-15T00:00:00Z\",\"anomalyEndDate\":\"2023-10-15T10:00:00Z\",\"dimensionalValue\":\"example-dimension\",\"impact\":{\"maxImpact\":0.13,\"totalActualSpend\":0.39,\"totalExpectedSpend\":0.26,\"totalImpact\":0.13,\"totalImpactPercentage\":50},\"monitorArn\":\"arn:aws:ce::123456789012:anomalymonitor/8c9ff265-664e-4ef6-83a1-68cbc2257ff4\",\"monitorName\":\"ExampleMonitor\",\"monitorType\":\"DIMENSIONAL\",\"rootCauses\":[{\"linkedAccount\":\"example-linked-account\",\"linkedAccountName\":\"linked-account-name\",\"region\":\"us-west-2\",\"service\":\"example-service\",\"usageType\":\"example-usage-type\"}],\"subscriptionId\":\"42e8a00f-d59b-42f9-acb3-35388f887502\",\"subscriptionName\":\"example-subscription\"}}"
+        }
+      }
+    ]
+  }

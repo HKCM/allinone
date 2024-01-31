@@ -1,0 +1,73 @@
+- env: staging
+  prefix: k8s_spot
+  tags:
+    - Key: maintainer
+      Value: karl.huang
+    - Key: repo
+      Value: devops/sysops/lambda/aws-env-monitor
+    - Key: description
+      Value: created by aws-env-monitor repo script -- cloudwatch alarm
+  alarms:
+    - alarmName: EC2-{INSTANCE_NAME}-StatusCheckFailed_Instance-{INSTANCE_ID} # {INSTANCE_ID}为了解决instance name重复的问题
+      metricName: StatusCheckFailed_Instance
+      statistic: Maximum
+      period: 60
+      evaluationPeriods: 1
+      threshold: 0
+      comparisonOperator: GreaterThanThreshold
+      treatMissingData: missing
+      okActions: 
+        - arn:aws:sns:ap-northeast-1:012345678901:cloudwatch_alarm_notice_topic_with_lambda
+      alarmActions: 
+        - arn:aws:sns:ap-northeast-1:012345678901:cloudwatch_alarm_notice_topic_with_lambda
+      #  - arn:aws:automate:ap-northeast-1:ec2:reboot # StatusCheckFailed_Instance reboot
+    - alarmName: EC2-{INSTANCE_NAME}-StatusCheckFailed_System-{INSTANCE_ID}
+      metricName: StatusCheckFailed_System
+      statistic: Maximum
+      period: 300
+      evaluationPeriods: 1
+      threshold: 0
+      comparisonOperator: GreaterThanThreshold
+      treatMissingData: missing
+      okActions: 
+        - arn:aws:sns:ap-northeast-1:012345678901:cloudwatch_alarm_notice_topic_with_lambda
+      alarmActions: 
+        - arn:aws:sns:ap-northeast-1:012345678901:cloudwatch_alarm_notice_topic_with_lambda
+      #  - arn:aws:automate:ap-northeast-1:ec2:recover # StatusCheckFailed_System recover
+      
+- env: prod
+  prefix: xxxxx
+  tags:
+    - Key: maintainer
+      Value: karl.huang
+    - Key: repo
+      Value: devops/sysops/lambda/aws-env-monitor
+    - Key: description
+      Value: created by aws-env-monitor repo script -- cloudwatch alarm
+  alarms:
+    - alarmName: EC2-{INSTANCE_NAME}-StatusCheckFailed_Instance-{INSTANCE_ID}
+      metricName: StatusCheckFailed_Instance
+      statistic: Maximum
+      period: 60
+      evaluationPeriods: 1
+      threshold: 0
+      comparisonOperator: GreaterThanThreshold
+      treatMissingData: missing
+      okActions: 
+        - arn:aws:sns:ap-northeast-1:012345678901:prod_cloudwatch_alarm
+      alarmActions: 
+        - arn:aws:sns:ap-northeast-1:012345678901:prod_cloudwatch_alarm
+      #  - arn:aws:automate:ap-northeast-1:ec2:reboot # StatusCheckFailed_Instance reboot
+    - alarmName: EC2-{INSTANCE_NAME}-StatusCheckFailed_System-{INSTANCE_ID}
+      metricName: StatusCheckFailed_System
+      statistic: Maximum
+      period: 300
+      evaluationPeriods: 1
+      threshold: 0
+      comparisonOperator: GreaterThanThreshold
+      treatMissingData: missing
+      okActions: 
+        - arn:aws:sns:ap-northeast-1:012345678901:prod_cloudwatch_alarm
+      alarmActions: 
+        - arn:aws:sns:ap-northeast-1:012345678901:prod_cloudwatch_alarm
+      #  - arn:aws:automate:ap-northeast-1:ec2:recover # StatusCheckFailed_System recover
