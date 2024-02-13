@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# keyword: send mesaage to google chat, googlechat
+
 source log.sh
 
 function send_msg_to_chat_usage(){
