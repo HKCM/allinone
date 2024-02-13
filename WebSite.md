@@ -40,7 +40,10 @@ go文库: https://studygolang.com/static/pkgdoc/main.html
 zlib: https://singlelogin.re/
 
 网络安全： https://github.com/eastmountyxz/NetworkSecuritySelf-study
+https://wukaipeng.com/technique/net-security/introduction
+
+CTF: https://hello-ctf.com/HC_Preface/
 
 Bilibili: https://github.com/SyMind/awesome-bilibili
 
-CTF: https://hello-ctf.com/HC_Preface/
+
