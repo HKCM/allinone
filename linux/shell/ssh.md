@@ -89,7 +89,7 @@ Host *.edu
 
 Host 10.52.* 10.42.*
     Port 2132
-    User okj-admin
+    User xxx-admin
     IdentityFile ~/.ssh/internal_key.pem
     ProxyCommand ssh -W %h:%p jump
 

@@ -36,11 +36,11 @@ resource "alicloud_security_group_rule" "node_rule" {
   ip_protocol       = "tcp"
   nic_type          = "intranet"
   policy            = "accept"
-  port_range        = "2522/2522"
+  port_range        = "1822/1822"
   priority          = 1
   security_group_id = alicloud_security_group.node_sg.id
-  cidr_ip           = "150.249.195.73/32"
-  description       = "For okj office ip"
+  cidr_ip           = "10.10.10.10/32"
+  description       = "For xxx office ip"
 }
 
 resource "alicloud_security_group_rule" "aptos_node_rule1" {
