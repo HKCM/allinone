@@ -88,10 +88,12 @@ MYSQL_USER="admin"
 MYSQL_PASSWORD="12345678"
 MYSQL_DATABASE="test1"
 MYSQL_TABLE="test_table"
-export MYSQL_PWD=12345678
+export MYSQL_PWD=12345678 # 特意设置的, 为了能在shell中自动读取到密码
 MYSQL_HOST="database-1-old1.cluster-cxq6crkmyuh7.ap-northeast-1.rds.amazonaws.com"
 MYSQL_HOST_RO="database-1-old1.cluster-ro-cxq6crkmyuh7.ap-northeast-1.rds.amazonaws.com"
 
+# 创建测试库
+mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS "$MYSQL_DATABASE";"
 
 # 创建测试表
 mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "CREATE TABLE IF NOT EXISTS "$MYSQL_TABLE" (id INT AUTO_INCREMENT PRIMARY KEY, data VARCHAR(255));" "$MYSQL_DATABASE"

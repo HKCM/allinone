@@ -1,5 +1,55 @@
 # awk
 
+awk常用功能:
+1. 指定分隔符显示某几列
+2. 通过正则表达式取出想要的内容
+3. 显示出某个范围内的内容通awk进行统计算
+4. awk组计算与去重
+
+
+
+## 示例
+
+```bash
+cat > test.txt <<EOF
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin
+EOF
+```
+
+```bash
+# 打印第五行, 需要用两个等号表示判断
+awk "NR==5" test.txt 
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+# 打印第五行到七行
+awk "NR==5,NR==7" test.txt 
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+
+# 输出加上行号, 必须使用单引号
+awk '{print NR,$0}' test.txt 
+1 root:x:0:0:root:/root:/bin/bash
+2 bin:x:1:1:bin:/bin:/sbin/nologin
+3 daemon:x:2:2:daemon:/sbin:/sbin/nologin
+4 adm:x:3:4:adm:/var/adm:/sbin/nologin
+5 lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+6 sync:x:5:0:sync:/sbin:/bin/sync
+7 shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+8 halt:x:7:0:halt:/sbin:/sbin/halt
+9 mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+10 uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin
+# 打印第五行到七行 并添加行号
+awk 'NR==5,NR==7 {print NR,$0}' test.txt 
+```
+
 ```shell
 awk 'BEGIN{ print "start" } pattern { commands } END{ print "end" }' file
 ```

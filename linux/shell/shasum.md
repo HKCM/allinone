@@ -1,4 +1,4 @@
-# 文件校验
+# shasum
 
 关键词: 哈希 文件校验 sha1 sha128 sha256 sha512 shasum sha256sum sha512sum
 
@@ -28,12 +28,5 @@ sha512sum file.dmg > file.dmg.sha512
 sha512sum -c file.dmg.sha512
 ```
 
-## MD5
 
-```shell
-# 以将输出的校验和重定向到一个文件
-md5sum filename > file_sum.md5
-# 检查校验和是否匹配,会自动匹配对应的文件名
-md5sum -c file_sum.md5 
-```
 

@@ -1,0 +1,3003 @@
+- name: okj-vault-web-c01
+  type: t3.medium
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - okj_aliyun_node_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - vault_web_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-vault-web-prod
+  image: default
+  subnet: prod_exchange_wallet_c
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-deploy
+      value: okj-vault-web
+    - key: okj-log
+      value: "on"
+    - key: okj-metrics
+      value: "off"
+    - key: Name
+      value: okj-vault-web-c01
+    - key: okj-profile
+      value: prod
+- name: okj-wallet-web-c01
+  type: m5.large
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - wallet_web_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-wallet-web-prod
+  image: default
+  subnet: prod_exchange_wallet_c
+  key: default
+  tags:
+    - key: Name
+      value: okj-wallet-web-c01
+    - key: okj-metrics
+      value: "off"
+    - key: okj-log
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-deploy
+      value: okj-wallet-web
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+- name: okj-wallet-sign-usb-c01
+  type: t3.medium
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - wallet_sign_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-wallet-sign-usb-prod
+  image: default
+  subnet: prod_exchange_wallet_c
+  key: default
+  tags:
+    - key: okj-metrics
+      value: "off"
+    - key: ssm-disable
+      value: "on"
+    - key: okj-deploy
+      value: okj-wallet-sign
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-profile
+      value: prod
+    - key: okj-log
+      value: "off"
+    - key: Name
+      value: okj-wallet-sign-usb-c01
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+- name: okj-apollo-c01
+  type: t3.small
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_apollo_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-apollo-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-log
+      value: "on"
+    - key: Deploy
+      value: okj-apollo
+    - key: okj-profile
+      value: prod
+    - key: okj-type
+      value: middleware
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: Name
+      value: okj-apollo-c01
+    - key: okj-monitor
+      value: "on"
+- name: okj-sms-c01
+  type: m5.large
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - service_sms_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-sms-prod
+  image: default
+  subnet: prod_exchange_private_c
+  key: default
+  tags:
+    - key: okj-type
+      value: service
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-sms-c01
+    - key: okj-metrics
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-sms
+    - key: okj-log
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-monitor
+      value: "on"
+- name: okj-auth-c01
+  type: t3.large
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - service_auth_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-auth-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-metrics
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: Name
+      value: okj-auth-c01
+    - key: okj-backup
+      value: weekly
+    - key: okj-profile
+      value: prod
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-log
+      value: "on"
+    - key: okj-deploy
+      value: okj-auth
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+- name: okj-asset-c01
+  type: m5.xlarge
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_asset_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-asset-prod
+  image: default
+  subnet: prod_exchange_private_c
+  key: default
+  tags:
+    - key: Name
+      value: okj-asset-c01
+    - key: okj-metrics
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-deploy
+      value: okj-asset
+    - key: okj-profile
+      value: prod
+- name: okj-web-c01
+  type: t3.medium
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_web_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-web-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-type
+      value: service
+    - key: Name
+      value: okj-web-c01
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-web
+    - key: okj-backup
+      value: weekly
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-metrics
+      value: "on"
+- name: okj-user-c01
+  type: t3.large
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - service_user_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-user-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-metrics
+      value: "on"
+    - key: okj-deploy
+      value: okj-user
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-user-c01
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+- name: okj-kong-nacos-sync-c01
+  type: t3.small
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_zookeeper_sg
+    - client_log_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - kong_dashboard_sg
+    - kong_core_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-kong-core-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-kong-core
+    - key: okj-profile
+      value: prod
+    - key: okj-log
+      value: "on"
+    - key: okj-metrics
+      value: "on"
+    - key: Name
+      value: okj-kong-nacos-sync-c01
+    - key: okj-backup
+      value: weekly
+    - key: okj-type
+      value: devops
+    - key: okj-monitor
+      value: "on"
+- name: okj-kong-server-c01
+  type: m5.large
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+    - kong_server_sg
+  instanceProfile: okj-kong-server-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-profile
+      value: prod
+    - key: okj-backup
+      value: weekly
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: Deploy
+      value: okj-kong-server
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-type
+      value: middleware
+    - key: Name
+      value: okj-kong-server-c01
+- name: okj-push-c01
+  type: m5.2xlarge
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - service_push_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-push-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-log
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: Name
+      value: okj-push-c01
+    - key: okj-metrics
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: JvmPrometheus
+      value: "on"
+    - key: okj-deploy
+      value: okj-push
+    - key: okj-type
+      value: service
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+- name: okj-zookeeper-c01
+  type: t3.small
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - zookeeper_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-zookeeper-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-type
+      value: middleware
+    - key: okj-profile
+      value: prod
+    - key: okj-monitor
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-zookeeper-c01
+- name: okj-support-c01
+  type: t3.medium
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_support_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-support-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-type
+      value: service
+    - key: okj-deploy
+      value: okj-support
+    - key: Name
+      value: okj-support-c01
+    - key: okj-metrics
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-log
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+- name: okj-spot-openrest-c01
+  type: m5.xlarge
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_spot_openrest_sg
+    - client_es_spot_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-spot-openrest-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: okj-deploy
+      value: okj-spot-openrest
+    - key: okj-profile
+      value: prod
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-metrics
+      value: "on"
+    - key: Name
+      value: okj-spot-openrest-c01
+    - key: okj-log
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+- name: okj-spot-rest-c01
+  type: m5.xlarge
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_es_spot_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - service_spot_rest_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-spot-rest-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-log
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: Name
+      value: okj-spot-rest-c01
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-deploy
+      value: okj-spot-rest
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-metrics
+      value: "on"
+    - key: okj-profile
+      value: prod
+- name: okj-market-c01
+  type: m5.xlarge
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - service_market_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_kafka_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-market-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: Name
+      value: okj-market-c01
+    - key: JvmMetrics
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-log
+      value: "on"
+    - key: okj-deploy
+      value: okj-market
+    - key: okj-metrics
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-profile
+      value: prod
+- name: okj-pulsar-c01
+  type: m5.xlarge
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - service_pulsar_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-pulsar-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-type
+      value: middleware
+    - key: okj-profile
+      value: prod
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-log
+      value: "on"
+    - key: Deploy
+      value: okj-pulsar
+    - key: Name
+      value: okj-pulsar-c01
+    - key: okj-monitor
+      value: "on"
+- name: okj-sorry-c01
+  type: t3.micro
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - sorry_server_sg
+    - client_log_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-sorry-prod
+  image: default
+  subnet: prod_exchange_private_c
+  key: default
+  tags:
+    - key: okj-deploy
+      value: okj-sorry
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: Name
+      value: okj-sorry-c01
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-log
+      value: "off"
+    - key: okj-metrics
+      value: "off"
+    - key: okj-profile
+      value: prod
+- name: okj-dev-nginx-c01
+  type: t3.micro
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - service_dev_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-sorry-prod
+  image: default
+  subnet: prod_exchange_private_c
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-dev-nginx-c01
+    - key: okj-backup
+      value: weekly
+    - key: okj-log
+      value: "off"
+    - key: okj-type
+      value: service
+    - key: okj-deploy
+      value: okj-dev-nginx
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-metrics
+      value: "off"
+- name: okj-boss-c01
+  type: t3.medium
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - service_boss_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-boss-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-metrics
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: Name
+      value: okj-boss-c01
+    - key: okj-deploy
+      value: okj-boss
+    - key: okj-profile
+      value: prod
+- name: okj-sms-a01
+  type: m5.large
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - service_sms_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-sms-prod
+  image: default
+  subnet: prod_exchange_private_a
+  key: default
+  tags:
+    - key: Name
+      value: okj-sms-a01
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-metrics
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-type
+      value: service
+    - key: okj-backup
+      value: weekly
+    - key: okj-deploy
+      value: okj-sms
+- name: okj-asset-a01
+  type: m5.xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_asset_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-asset-prod
+  image: default
+  subnet: prod_exchange_private_a
+  key: default
+  tags:
+    - key: Name
+      value: okj-asset-a01
+    - key: okj-log
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-metrics
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-deploy
+      value: okj-asset
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+- name: okj-apollo-a01
+  type: t3.small
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_apollo_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-apollo-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-log
+      value: "on"
+    - key: Name
+      value: okj-apollo-a01
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: Deploy
+      value: okj-apollo
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-type
+      value: middleware
+- name: okj-vault-web-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - okj_aliyun_node_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - vault_web_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-vault-web-prod
+  image: default
+  subnet: prod_exchange_wallet_a
+  key: default
+  tags:
+    - key: okj-metrics
+      value: "off"
+    - key: okj-profile
+      value: prod
+    - key: okj-type
+      value: service
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-log
+      value: "on"
+    - key: Name
+      value: okj-vault-web-a01
+    - key: okj-deploy
+      value: okj-vault-web
+    - key: okj-monitor
+      value: "off"
+- name: okj-wallet-sign-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - wallet_sign_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-wallet-sign-prod
+  image: default
+  subnet: prod_exchange_wallet_a
+  key: default
+  tags:
+    - key: okj-metrics
+      value: "off"
+    - key: ssm-disable
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-deploy
+      value: okj-wallet-sign
+    - key: Name
+      value: okj-wallet-sign-a01
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-log
+      value: "off"
+- name: okj-wallet-proxy-a01
+  type: t3.small
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - wallet_proxy_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-wallet-proxy-prod
+  image: default
+  subnet: prod_exchange_wallet_a
+  key: default
+  tags:
+    - key: okj-type
+      value: service
+    - key: Name
+      value: okj-wallet-proxy-a01
+    - key: okj-deploy
+      value: okj-wallet-proxy
+    - key: okj-log
+      value: "on"
+    - key: okj-metrics
+      value: "off"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-profile
+      value: prod
+    - key: okj-monitor
+      value: "on"
+- name: okj-kong-server-a01
+  type: m5.large
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+    - kong_server_sg
+  instanceProfile: okj-kong-server-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-type
+      value: middleware
+    - key: Deploy
+      value: okj-kong-server
+    - key: okj-monitor
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: Name
+      value: okj-kong-server-a01
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-profile
+      value: prod
+- name: okj-kong-nacos-sync-a01
+  type: t3.small
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_zookeeper_sg
+    - client_log_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - kong_dashboard_sg
+    - kong_core_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-kong-core-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-log
+      value: "on"
+    - key: okj-metrics
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-kong-nacos-sync-a01
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: devops
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-kong-core
+- name: okj-boss-a01
+  type: m5.xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - service_boss_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-boss-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: Name
+      value: okj-boss-a01
+    - key: okj-monitor
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-backup
+      value: weekly
+    - key: okj-metrics
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-boss
+    - key: okj-profile
+      value: prod
+    - key: okj-type
+      value: service
+- name: okj-web-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_web_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-web-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-metrics
+      value: "on"
+    - key: Name
+      value: okj-web-a01
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-web
+    - key: okj-backup
+      value: weekly
+    - key: okj-profile
+      value: prod
+- name: okj-user-job-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_zookeeper_sg
+    - client_log_sg
+    - client_apm_sg
+    - service_user_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-user-job-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: okj-deploy
+      value: okj-user-job
+    - key: okj-profile
+      value: prod
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: Name
+      value: okj-user-job-a01
+    - key: okj-metrics
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+- name: okj-user-a01
+  type: t3.large
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - service_user_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-user-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-log
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: Name
+      value: okj-user-a01
+    - key: okj-monitor
+      value: "on"
+    - key: okj-deploy
+      value: okj-user
+    - key: okj-type
+      value: service
+    - key: okj-backup
+      value: weekly
+    - key: okj-profile
+      value: prod
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-metrics
+      value: "on"
+- name: okj-auth-a01
+  type: t3.large
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - service_auth_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-auth-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: Name
+      value: okj-auth-a01
+    - key: okj-deploy
+      value: okj-auth
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-metrics
+      value: "on"
+    - key: okj-profile
+      value: prod
+- name: okj-common-jobs-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_zookeeper_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_common_jobs_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-common-jobs-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-type
+      value: service
+    - key: okj-log
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-metrics
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-common-jobs-a01
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: okj-deploy
+      value: okj-common-jobs
+- name: okj-push-a01
+  type: m5.2xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - service_push_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-push-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-deploy
+      value: okj-push
+    - key: okj-type
+      value: service
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-metrics
+      value: "on"
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: JvmPrometheus
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-log
+      value: "on"
+    - key: Name
+      value: okj-push-a01
+    - key: tmp-log4j2
+      value: "on"
+- name: okj-lt-matcher-a01
+  type: m5.4xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_kafka_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+    - service_lt_matcher_sg
+  instanceProfile: okj-lt-matcher-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-lt-matcher
+    - key: okj-monitor
+      value: "on"
+    - key: okj-metrics
+      value: "on"
+    - key: okj-backup
+      value: daily
+    - key: okj-log
+      value: "on"
+    - key: JvmMetrics
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: Name
+      value: okj-lt-matcher-a01
+    - key: okj-profile
+      value: prod
+- name: okj-zookeeper-a02
+  type: t3.small
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - zookeeper_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-zookeeper-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: middleware
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-zookeeper-a02
+    - key: okj-profile
+      value: prod
+- name: okj-zookeeper-a01
+  type: t3.small
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - zookeeper_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-zookeeper-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-zookeeper-a01
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-profile
+      value: prod
+    - key: okj-monitor
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-type
+      value: middleware
+- name: okj-support-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_support_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-support-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: Name
+      value: okj-support-a01
+    - key: okj-log
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-deploy
+      value: okj-support
+    - key: okj-metrics
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-profile
+      value: prod
+- name: okj-tms-a01
+  type: m5.large
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_kafka_sg
+    - service_tms_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-tms-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-tms
+    - key: okj-metrics
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: Name
+      value: okj-tms-a01
+- name: okj-trade-backup-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - service_trade_backup_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-trade-backup-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: okj-profile
+      value: prod
+    - key: okj-monitor
+      value: "on"
+    - key: Name
+      value: okj-trade-backup-a01
+    - key: okj-type
+      value: service
+    - key: okj-log
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-metrics
+      value: "on"
+    - key: okj-deploy
+      value: okj-trade-backup
+- name: okj-spot-job-a01
+  type: m5.xlarge
+  az: ap-northeast-1a
+  sg:
+    - service_spot_job_sg
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_es_spot_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-spot-job-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-log
+      value: "on"
+    - key: okj-deploy
+      value: okj-spot-job
+    - key: okj-metrics
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-spot-job-a01
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+- name: okj-spot-openrest-a01
+  type: m5.xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_spot_openrest_sg
+    - client_es_spot_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-spot-openrest-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-deploy
+      value: okj-spot-openrest
+    - key: tmp-log4j2
+      value: "on"
+    - key: Name
+      value: okj-spot-openrest-a01
+    - key: okj-profile
+      value: prod
+    - key: okj-metrics
+      value: "on"
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-log
+      value: "on"
+- name: okj-spot-rest-a01
+  type: m5.xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_es_spot_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - service_spot_rest_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-spot-rest-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-metrics
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-deploy
+      value: okj-spot-rest
+    - key: Name
+      value: okj-spot-rest-a01
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-type
+      value: service
+    - key: okj-log
+      value: "on"
+- name: okj-spot-counter-a01
+  type: m5.4xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_counter_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-spot-counter-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: JvmMetrics
+      value: "on"
+    - key: okj-backup
+      value: daily
+    - key: Name
+      value: okj-spot-counter-a01
+    - key: okj-metrics
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-log
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-profile
+      value: prod
+    - key: okj-deploy
+      value: okj-spot-counter
+- name: okj-lt-manager-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_lt_manager_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-lt-manager-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: Name
+      value: okj-lt-manager-a01
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-metrics
+      value: "on"
+    - key: okj-deploy
+      value: okj-lt-manager
+    - key: okj-profile
+      value: prod
+- name: okj-market-a01
+  type: m5.xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - service_market_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_kafka_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-market-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: JvmMetrics
+      value: "on"
+    - key: okj-deploy
+      value: okj-market
+    - key: okj-metrics
+      value: "on"
+    - key: okj-backup
+      value: daily
+    - key: Name
+      value: okj-market-a01
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-profile
+      value: prod
+- name: okj-vault-job-a01
+  type: m6i.xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - vault_job_sg
+    - client_zookeeper_sg
+    - okj_aliyun_node_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-vault-job-prod
+  image: default
+  subnet: prod_exchange_wallet_a
+  key: default
+  tags:
+    - key: okj-log
+      value: "on"
+    - key: okj-metrics
+      value: "off"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-backup
+      value: weekly
+    - key: okj-profile
+      value: prod
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-vault-job
+    - key: okj-type
+      value: service
+    - key: Name
+      value: okj-vault-job-a01
+- name: okj-asset-job-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_zookeeper_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_asset_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-asset-job-prod
+  image: default
+  subnet: prod_exchange_private_a
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-asset-job
+    - key: okj-profile
+      value: prod
+    - key: okj-metrics
+      value: "on"
+    - key: Name
+      value: okj-asset-job-a01
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+- name: okj-cold-vault-a01
+  type: m6i.large
+  az: ap-northeast-1a
+  sg:
+    - cold_vault_sg
+    - vpce_s3_sg
+    - client_zookeeper_sg
+    - okj_aliyun_node_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-cold-vault-job-prod
+  image: default
+  subnet: prod_exchange_wallet_a
+  key: default
+  tags:
+    - key: okj-type
+      value: service
+    - key: okj-metrics
+      value: "off"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-cold-vault-a01
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-deploy
+      value: okj-cold-vault
+    - key: okj-log
+      value: "on"
+- name: okj-pinpoint-a01
+  type: r6i.large
+  az: ap-northeast-1a
+  sg:
+    - jump_admin_ssh_sg
+    - server_pinpoint_sg
+    - vpce_s3_admin_sg
+    - client_prometheus_admin_sg
+    - client_log_admin_sg
+  instanceProfile: okj-pinpoint-prod
+  image: default
+  subnet: prod_admin_private_a
+  key: default
+  tags:
+    - key: okj-type
+      value: devops
+    - key: Name
+      value: okj-pinpoint-a01
+    - key: okj-log
+      value: "off"
+    - key: okj-profile
+      value: prod
+    - key: okj-metrics
+      value: "off"
+    - key: okj-deploy
+      value: okj-pinpoint
+    - key: okj-monitor
+      value: "on"
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+- name: okj-pulsar-a02
+  type: m5.xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - service_pulsar_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-pulsar-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: Deploy
+      value: okj-pulsar
+    - key: okj-monitor
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: Name
+      value: okj-pulsar-a02
+    - key: okj-type
+      value: middleware
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-profile
+      value: prod
+- name: okj-pulsar-a01
+  type: m5.xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - service_pulsar_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-pulsar-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-type
+      value: middleware
+    - key: okj-backup
+      value: weekly
+    - key: okj-profile
+      value: prod
+    - key: Deploy
+      value: okj-pulsar
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: Name
+      value: okj-pulsar-a01
+- name: okj-boss-job-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_zookeeper_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - service_boss_job_sg
+    - jump_ssh_sg
+    - client_kafka_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-boss-job-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-profile
+      value: prod
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-boss-job-a01
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-boss-job
+    - key: okj-metrics
+      value: "on"
+- name: okj-wallet-web-usb-c01
+  type: m5.large
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - okj_aliyun_node_sg
+    - client_log_sg
+    - client_apm_sg
+    - jump_ssh_sg
+    - wallet_web_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-wallet-web-prod
+  image: default
+  subnet: prod_exchange_wallet_c
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: Name
+      value: okj-wallet-web-usb-c01
+    - key: okj-deploy
+      value: okj-wallet-web
+    - key: okj-profile
+      value: prod
+    - key: okj-metrics
+      value: "off"
+- name: okj-tool-c01
+  type: m6g.large
+  az: ap-northeast-1c
+  sg:
+    - jump_admin_ssh_sg
+    - okj_tool_sg
+    - vpce_s3_admin_sg
+    - client_prometheus_admin_sg
+    - client_log_admin_sg
+  instanceProfile: okj-tool-prod
+  image: default
+  subnet: prod_admin_private_c
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-tool-c01
+    - key: okj-monitor
+      value: "on"
+    - key: okj-log
+      value: "off"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-tool
+    - key: okj-metrics
+      value: "off"
+    - key: okj-type
+      value: devops
+- name: okj-wallet-proxy-usb-a01
+  type: t3.small
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - wallet_proxy_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-wallet-proxy-prod
+  image: default
+  subnet: prod_exchange_wallet_a
+  key: default
+  tags:
+    - key: okj-profile
+      value: prod
+    - key: okj-monitor
+      value: "on"
+    - key: okj-backup
+      value: weekly
+    - key: okj-log
+      value: "on"
+    - key: Name
+      value: okj-wallet-proxy-usb-a01
+    - key: okj-type
+      value: service
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-wallet-proxy
+    - key: okj-metrics
+      value: "off"
+- name: okj-track-collector-a01
+  type: m6g.large
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - okj-track-collector-sg
+    - jump_ssh_sg
+    - exchange_ssmmessages_sg
+    - exchange_ssm_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-track-collector-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-track-collector-a01
+    - key: okj-metrics
+      value: "off"
+    - key: okj-deploy
+      value: okj-track-collector
+    - key: okj-type
+      value: service
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+- name: okj-nacos-d01
+  type: t4g.medium
+  az: ap-northeast-1d
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_eureka_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-eureka-prod
+  image: default
+  subnet: prod_exchange_main_d
+  key: default
+  tags:
+    - key: Name
+      value: okj-nacos-d01
+    - key: okj-type
+      value: middleware
+    - key: okj-profile
+      value: prod_not_stop
+    - key: okj-monitor
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-log
+      value: "off"
+- name: okj-risk-service-c01
+  type: t3.medium
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - service_risk_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-risk-service-prod
+  image: default
+  subnet: prod_exchange_private_c
+  key: default
+  tags:
+    - key: okj-metrics
+      value: "on"
+    - key: okj-deploy
+      value: okj-risk-service
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-risk-service-c01
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: okj-log
+      value: "on"
+- name: okj-jump-server-a01
+  type: t4g.micro
+  az: ap-northeast-1a
+  sg:
+    - jump_admin_ssh_sg
+    - jump_server_sg
+    - client_prometheus_admin_sg
+    - client_log_admin_sg
+  instanceProfile: jump-server-prod
+  image: default
+  subnet: prod_admin_public_a
+  key: default
+  tags:
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-jump-server-a01
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: devops
+    - key: okj-log
+      value: "off"
+- name: okj-tool-a01
+  type: t4g.small
+  az: ap-northeast-1a
+  sg:
+    - jump_admin_ssh_sg
+    - okj_tool_sg
+    - vpce_s3_admin_sg
+    - client_prometheus_admin_sg
+    - client_log_admin_sg
+  instanceProfile: okj-tool-prod
+  image: default
+  subnet: prod_admin_private_a
+  key: default
+  tags:
+    - key: Name
+      value: okj-tool-a01
+    - key: okj-metrics
+      value: "off"
+    - key: okj-deploy
+      value: okj-tool
+    - key: okj-type
+      value: devops
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+- name: okj-web-pre-a01
+  type: t3.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_web_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-web-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-type
+      value: devops
+    - key: Name
+      value: okj-web-pre-a01
+    - key: tmp-log4j2
+      value: "on"
+    - key: Deploy
+      value: okj-web
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-profile
+      value: prod
+- name: okj-nacos-a01
+  type: t4g.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_eureka_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-eureka-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-log
+      value: "off"
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-nacos-a01
+    - key: okj-monitor
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-profile
+      value: prod_not_stop
+    - key: okj-type
+      value: middleware
+- name: okj-xxl-job-a01
+  type: t4g.medium
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-xxl-job-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-type
+      value: middleware
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-metrics
+      value: "on"
+    - key: okj-backup
+      value: weekly
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-xxl-job-a01
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+- name: okj-victoria-a01
+  type: r5.large
+  az: ap-northeast-1a
+  sg:
+    - jump_admin_ssh_sg
+    - vpce_s3_admin_sg
+    - client_prometheus_admin_sg
+    - server_alertmanager_sg
+    - client_log_admin_sg
+    - server_prometheus_sg
+  instanceProfile: okj-prometheus-prod
+  image: default
+  subnet: prod_admin_private_a
+  key: default
+  tags:
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-victoria-a01
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: devops
+    - key: okj-backup
+      value: weekly
+    - key: okj-log
+      value: "on"
+- name: okj-nacos-c01
+  type: t4g.medium
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_eureka_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-eureka-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-type
+      value: middleware
+    - key: okj-profile
+      value: prod_not_stop
+    - key: okj-monitor
+      value: "on"
+    - key: okj-log
+      value: "off"
+    - key: Name
+      value: okj-nacos-c01
+- name: okj-log-kafka-d01
+  type: a1.xlarge
+  az: ap-northeast-1d
+  sg:
+    - jump_admin_ssh_sg
+    - vpce_s3_admin_sg
+    - client_prometheus_admin_sg
+    - server_log_kafka_sg
+    - client_log_admin_sg
+  instanceProfile: okj-kafka
+  image: default
+  subnet: prod_admin_private_d
+  key: default
+  tags:
+    - key: Name
+      value: okj-log-kafka-d01
+    - key: okj-monitor
+      value: "off"
+- name: okj-victoria-c01
+  type: r5.large
+  az: ap-northeast-1c
+  sg:
+    - jump_admin_ssh_sg
+    - vpce_s3_admin_sg
+    - client_prometheus_admin_sg
+    - server_alertmanager_sg
+    - client_log_admin_sg
+    - server_prometheus_sg
+  instanceProfile: okj-prometheus-prod
+  image: default
+  subnet: prod_admin_private_c
+  key: default
+  tags:
+    - key: okj-type
+      value: devops
+    - key: okj-profile
+      value: prod
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: Name
+      value: okj-victoria-c01
+    - key: okj-log
+      value: "on"
+    - key: okj-monitor
+      value: "on"
+- name: okj-fiat-c01
+  type: m6a.large
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - service_fiat_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-fiat-prod
+  image: default
+  subnet: prod_exchange_private_c
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-type
+      value: service
+    - key: Name
+      value: okj-fiat-c01
+    - key: okj-metrics
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: okj-deploy
+      value: okj-fiat
+    - key: okj-log
+      value: "on"
+- name: okj-bigdata-engine-c01
+  type: c5a.xlarge
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_bigdata_engine_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-bigdata-engine-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-bigdata-engine-c01
+    - key: okj-auto-patch
+      value: Staging-Linux
+    - key: okj-deploy
+      value: okj-bigdata-engine
+    - key: okj-type
+      value: service
+    - key: okj-backup
+      value: weekly
+    - key: okj-metrics
+      value: "on"
+- name: okj-clickhouse-a01
+  type: r7gd.2xlarge
+  az: ap-northeast-1a
+  sg:
+    - jump_admin_ssh_sg
+    - vpce_s3_admin_sg
+    - client_prometheus_admin_sg
+    - server_alertmanager_sg
+    - client_log_admin_sg
+    - server_clickhouse_sg
+    - server_prometheus_sg
+  instanceProfile: okj-prometheus-prod
+  image: default
+  subnet: prod_admin_private_a
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: okj-backup
+      value: weekly
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-clickhouse-a01
+    - key: okj-auto-patch
+      value: Staging-Linux
+    - key: okj-type
+      value: devops
+- name: okj-earn-job-a01
+  type: m5.large
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - service_earn_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-earn-job-prod
+  image: default
+  subnet: prod_exchange_private_a
+  key: default
+  tags:
+    - key: DeployDate
+      value: 2023-12-14 12:06:57 JST
+    - key: Name
+      value: okj-earn-job-a01
+    - key: okj-profile
+      value: prod
+    - key: okj-log
+      value: "on"
+    - key: okj-auto-power
+      value: "off"
+    - key: aws:cloudformation:stack-id
+      value: arn:aws:cloudformation:ap-northeast-1:738595724739:stack/OkjEarnStack/74646650-9a1d-11ee-9fbc-0e3f68f4f7cb
+    - key: okj-monitor
+      value: "on"
+    - key: Project
+      value: https://gitlab.okcoin.tokyo/devops/cdk/okj-cdk-earn
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-deploy
+      value: okj-earn-job
+    - key: aws:cloudformation:stack-name
+      value: OkjEarnStack
+    - key: okj-metrics
+      value: "on"
+    - key: Env
+      value: prod
+    - key: aws:cloudformation:logical-id
+      value: jobInstanceA01
+    - key: okj-backup
+      value: weekly
+    - key: okj-type
+      value: service
+- name: okj-log-kafka-a02
+  type: a1.xlarge
+  az: ap-northeast-1a
+  sg:
+    - jump_admin_ssh_sg
+    - vpce_s3_admin_sg
+    - client_prometheus_admin_sg
+    - server_log_kafka_sg
+    - client_log_admin_sg
+  instanceProfile: okj-kafka
+  image: default
+  subnet: prod_admin_private_a
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: Name
+      value: okj-log-kafka-a02
+- name: okj-fiat-job-a01
+  type: m6a.large
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - service_fiat_sg
+    - jump_ssh_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-fiat-job-prod
+  image: default
+  subnet: prod_exchange_private_a
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-fiat-job-a01
+    - key: okj-deploy
+      value: okj-fiat-job
+    - key: okj-type
+      value: service
+    - key: okj-metrics
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+- name: okj-fiat-a01
+  type: m6a.large
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - service_fiat_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-fiat-prod
+  image: default
+  subnet: prod_exchange_private_a
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-log
+      value: "on"
+    - key: okj-metrics
+      value: "on"
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-fiat-a01
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-type
+      value: service
+    - key: okj-deploy
+      value: okj-fiat
+    - key: tmp-log4j2
+      value: "on"
+- name: okj-earn-a01
+  type: m5.large
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - service_earn_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-earn-prod
+  image: default
+  subnet: prod_exchange_private_a
+  key: default
+  tags:
+    - key: okj-type
+      value: service
+    - key: Project
+      value: https://gitlab.okcoin.tokyo/devops/cdk/okj-cdk-earn
+    - key: aws:cloudformation:stack-id
+      value: arn:aws:cloudformation:ap-northeast-1:738595724739:stack/OkjEarnStack/74646650-9a1d-11ee-9fbc-0e3f68f4f7cb
+    - key: okj-backup
+      value: weekly
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-metrics
+      value: "on"
+    - key: okj-auto-power
+      value: "off"
+    - key: okj-monitor
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: Name
+      value: okj-earn-a01
+    - key: DeployDate
+      value: 2023-12-14 12:06:57 JST
+    - key: okj-deploy
+      value: okj-earn
+    - key: okj-profile
+      value: prod
+    - key: aws:cloudformation:stack-name
+      value: OkjEarnStack
+    - key: Env
+      value: prod
+    - key: aws:cloudformation:logical-id
+      value: serviceInstanceA01
+- name: okj-log-kafka-a01
+  type: a1.xlarge
+  az: ap-northeast-1a
+  sg:
+    - jump_admin_ssh_sg
+    - vpce_s3_admin_sg
+    - client_prometheus_admin_sg
+    - server_log_kafka_sg
+    - client_log_admin_sg
+  instanceProfile: okj-kafka
+  image: default
+  subnet: prod_admin_private_a
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: Name
+      value: okj-log-kafka-a01
+- name: okj-bigdata-engine-a01
+  type: c5a.xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_bigdata_engine_sg
+    - client_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-bigdata-engine-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-auto-patch
+      value: Staging-Linux
+    - key: okj-metrics
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-bigdata-engine-a01
+    - key: okj-backup
+      value: weekly
+    - key: okj-deploy
+      value: okj-bigdata-engine
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+- name: okj-bigdata-es-a01
+  type: m7g.large
+  az: ap-northeast-1a
+  sg:
+    - server_elasticsearch_sg
+    - vpce_s3_sg
+    - client_log_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-fiat-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: Name
+      value: okj-bigdata-es-a01
+    - key: okj-profile
+      value: prod
+    - key: okj-type
+      value: middleware
+    - key: okj-auto-patch
+      value: Staging-Linux
+    - key: okj-monitor
+      value: "on"
+- name: okj-bigdata-es-a02
+  type: m7g.large
+  az: ap-northeast-1a
+  sg:
+    - server_elasticsearch_sg
+    - vpce_s3_sg
+    - client_log_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-fiat-prod
+  image: default
+  subnet: prod_exchange_main_a
+  key: default
+  tags:
+    - key: okj-type
+      value: middleware
+    - key: okj-profile
+      value: prod
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: Name
+      value: okj-bigdata-es-a02
+    - key: okj-auto-patch
+      value: Staging-Linux
+- name: okj-asset-a02
+  type: m5.xlarge
+  az: ap-northeast-1a
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_asset_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-asset-prod
+  image: default
+  subnet: prod_exchange_private_a
+  key: default
+  tags:
+    - key: okj-deploy
+      value: okj-asset
+    - key: okj-metrics
+      value: "on"
+    - key: tmp-log4j2
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: Name
+      value: okj-asset-a02
+    - key: okj-monitor
+      value: "on"
+    - key: okj-type
+      value: service
+- name: okj-xxl-job-c01
+  type: t4g.medium
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - service_xxl_job_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-xxl-job-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-backup
+      value: weekly
+    - key: okj-type
+      value: middleware
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-metrics
+      value: "on"
+    - key: okj-log
+      value: "on"
+    - key: Name
+      value: okj-xxl-job-c01
+- name: okj-earn-c01
+  type: m5.large
+  az: ap-northeast-1c
+  sg:
+    - vpce_s3_sg
+    - client_log_sg
+    - client_apm_sg
+    - service_earn_sg
+    - client_eureka_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - client_apollo_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-earn-prod
+  image: default
+  subnet: prod_exchange_private_c
+  key: default
+  tags:
+    - key: okj-monitor
+      value: "on"
+    - key: okj-profile
+      value: prod
+    - key: Name
+      value: okj-earn-c01
+    - key: okj-deploy
+      value: okj-earn
+    - key: okj-log
+      value: "on"
+    - key: okj-metrics
+      value: "on"
+    - key: DeployDate
+      value: 2023-12-14 12:06:57 JST
+    - key: Project
+      value: https://gitlab.okcoin.tokyo/devops/cdk/okj-cdk-earn
+    - key: okj-auto-power
+      value: "off"
+    - key: okj-auto-patch
+      value: Prod-AL2
+    - key: okj-backup
+      value: weekly
+    - key: aws:cloudformation:stack-id
+      value: arn:aws:cloudformation:ap-northeast-1:738595724739:stack/OkjEarnStack/74646650-9a1d-11ee-9fbc-0e3f68f4f7cb
+    - key: aws:cloudformation:logical-id
+      value: serviceInstanceC01
+    - key: okj-type
+      value: service
+    - key: Env
+      value: prod
+    - key: aws:cloudformation:stack-name
+      value: OkjEarnStack
+- name: okj-bigdata-es-c01
+  type: m7g.large
+  az: ap-northeast-1c
+  sg:
+    - server_elasticsearch_sg
+    - vpce_s3_sg
+    - client_log_sg
+    - jump_ssh_sg
+    - client_prometheus_sg
+    - vpce_secrets_sg
+  instanceProfile: okj-fiat-prod
+  image: default
+  subnet: prod_exchange_main_c
+  key: default
+  tags:
+    - key: okj-auto-patch
+      value: Staging-Linux
+    - key: okj-type
+      value: middleware
+    - key: okj-profile
+      value: prod
+    - key: okj-backup
+      value: weekly
+    - key: okj-monitor
+      value: "on"
+    - key: Name
+      value: okj-bigdata-es-c01

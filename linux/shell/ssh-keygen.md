@@ -11,6 +11,33 @@ cat ~/.ssh/known_hosts # 查看本地记录的指纹
 ssh-keygen -R hostname # 删除本地的公钥指纹
 ```
 
+# 取消ssh密码
+
+备份密钥
+```bash
+cp ~/.ssh/id_rsa ~/.ssh/id_rsa.backup
+```
+
+## 方法一
+
+通过修改ssh密码,使新密码为空的形式,取消ssh密码
+
+```bash
+ssh-keygen -f keyname -p
+```
+
+## 方法二
+
+使用openssl
+
+```bash
+openssl rsa -in ~/.ssh/id_rsa -out ~/.ssh/id_rsa_new
+mv ~/.ssh/id_rsa ~/.ssh/id_rsa_old
+mv ~/.ssh/id_rsa_new ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
+```
+
+
 将公钥放入到远程主机对应用户的`~/.ssh/authorized_keys`文件中即可以该用户身份远程登录.
 
 ```bash

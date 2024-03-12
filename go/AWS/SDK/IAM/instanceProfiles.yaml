@@ -1,0 +1,580 @@
+- name: okj-fiat-prod
+  role:
+    name: okj-fiat-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-fiat-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-wallet-web-prod
+  role:
+    name: okj-wallet-web-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-wallet-web-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-auth-prod
+  role:
+    name: okj-auth-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-auth-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-sorry-prod
+  role:
+    name: okj-sorry-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-trade-backup-prod
+  role:
+    name: okj-trade-backup-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-trade-backup-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-vault-job-prod
+  role:
+    name: okj-vault-job-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-vault-job-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-xxl-job-prod
+  role:
+    name: okj-xxl-job-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-xxl-job-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-prometheus-prod
+  role:
+    name: okj-prometheus-prod
+    policies:
+        - name: AmazonEC2ReadOnlyAccess
+          type: AWS managed
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: CloudWatchReadOnlyAccess
+          type: AWS managed
+        - name: okj-prometheus-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-asset-prod
+  role:
+    name: okj-asset-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-asset-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-kong-core-prod
+  role:
+    name: okj-kong-core-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-kong-core-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-lt-matcher-prod
+  role:
+    name: okj-lt-matcher-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-lt-matcher-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-lt-manager-prod
+  role:
+    name: okj-lt-manager-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-lt-manager-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-apollo-prod
+  role:
+    name: okj-apollo-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-apollo-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-sms-prod
+  role:
+    name: okj-sms-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-sms-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-common-jobs-prod
+  role:
+    name: okj-common-jobs-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-common-jobs-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: jump-server-prod
+  role:
+    name: jump-server-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: boss-ops
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-tms-prod
+  role:
+    name: okj-tms-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-tms-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-eureka-prod
+  role:
+    name: okj-eureka-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-eureka-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-bigdata-engine-prod
+  role:
+    name: okj-bigdata-engine-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-bigdata-engine-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-web-prod
+  role:
+    name: okj-web-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-web-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-zookeeper-prod
+  role:
+    name: okj-zookeeper-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-zookeeper-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-support-prod
+  role:
+    name: okj-support-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-support-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-market-prod
+  role:
+    name: okj-market-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-market-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-boss-job-prod
+  role:
+    name: okj-boss-job-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-boss-job-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-boss-job-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-pinpoint-prod
+  role:
+    name: okj-pinpoint-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-vault-web-prod
+  role:
+    name: okj-vault-web-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-vault-web-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-user-prod
+  role:
+    name: okj-user-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-user-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-push-prod
+  role:
+    name: okj-push-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-push-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-spot-rest-prod
+  role:
+    name: okj-spot-rest-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-spot-rest-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-pulsar-prod
+  role:
+    name: okj-pulsar-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-pulsar-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-wallet-sign-prod
+  role:
+    name: okj-wallet-sign-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-wallet-sign-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-wallet-proxy-prod
+  role:
+    name: okj-wallet-proxy-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-wallet-proxy-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-track-collector-prod
+  role:
+    name: okj-track-collector-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-risk-service-prod
+  role:
+    name: okj-risk-service-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-risk-service-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-spot-openrest-prod
+  role:
+    name: okj-spot-openrest-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-spot-openrest-prod
+          type: Customer managed
+        - name: es_snapshot_role_forUser
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-boss-prod
+  role:
+    name: okj-boss-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-boss-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-user-job-prod
+  role:
+    name: okj-user-job-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-user-job-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-cold-vault-job-prod
+  role:
+    name: okj-cold-vault-job-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-cold-vault-job-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-kafka
+  role:
+    name: okj-kafka
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-kafka
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-fiat-job-prod
+  role:
+    name: okj-fiat-job-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-fiat-job-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-wallet-sign-usb-prod
+  role:
+    name: okj-wallet-sign-usb-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: okj-wallet-sign-usb-prod
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-kong-server-prod
+  role:
+    name: okj-kong-server-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-kong-server-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-spot-job-prod
+  role:
+    name: okj-spot-job-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-spot-job-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-spot-counter-prod
+  role:
+    name: okj-spot-counter-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-spot-counter-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-asset-job-prod
+  role:
+    name: okj-asset-job-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-asset-job-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-tool-prod
+  role:
+    name: okj-tool-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: kyc-use-kms
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: allow_access_rds_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-earn-job-prod
+  role:
+    name: okj-earn-job-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: okj-earn-job-prod
+          type: Customer managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+- name: okj-earn-prod
+  role:
+    name: okj-earn-prod
+    policies:
+        - name: AmazonSSMManagedInstanceCore
+          type: AWS managed
+        - name: allow_send_logs_to_cloudwatch_logs
+          type: Customer managed
+        - name: limit-access-s3-bucket-prod
+          type: Customer managed
+        - name: okj-earn-prod
+          type: Customer managed

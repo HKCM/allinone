@@ -1,4 +1,4 @@
-```bash
+#!/bin/bash
 # a01和c01机器的subnet不一样 通过subnet来部署到不同的分区中
 
 #这里使用 asset-a01 imageID
@@ -85,4 +85,3 @@ aws elbv2 create-listener \
 --certificates CertificateArn=arn:aws:acm:ap-northeast-1:123456789012:certificate/xxxx7e38-xxxx-4384-a509-e67097e0xxxx \
 --ssl-policy ELBSecurityPolicy-TLS-1-2-2017-01 \
 --default-actions Type=forward,TargetGroupArn=${TargetGroupArn}
-```

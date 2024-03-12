@@ -3,9 +3,9 @@ keyword: json序列化和反序列化
 ```go
 // 定义Order结构体，字段名包括字符串型的Consumer、Phone和Goods,float64类型Price
 type Order struct {
-	Consumer string `json:"consumer"`
-	Phone    string
-	Price    float64
+	Consumer string `json:"consumer" yaml:"consumer"`
+	Phone    string　`json:"-"` // 不转换为json
+	Price    float64 `json："price,omitempty"` 
 	Goods    string `json:"product"`
 }
 

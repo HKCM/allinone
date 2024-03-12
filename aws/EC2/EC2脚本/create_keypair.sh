@@ -1,8 +1,3 @@
-## 描述: 创建EC2 Keypair
-
-
-
-```shell
 #!/usr/bin/env bash
 set -x
 
@@ -12,18 +7,17 @@ DEFAULT_KEYNAME=mykey
 function usage() {
   echo "Usage:
 
-./createKeypair.sh -p <profile> [-r <region>] -k <keypair name>
+./$0 -p <profile> [-r <region>] -k <keypair name>
 Example:
 
-  ./createKeypair.sh -p admin -r us-east-1 -k mykey
+  ./$0 -p admin -r us-east-1 -k mykey
 "
 }
 
 while getopts "p:r:k:h" opt; do
   case "$opt" in
   p) PROFILE="$OPTARG" ;;
-  r) REGION="$OPTARG" 
-     echo 1;;
+  r) REGION="$OPTARG" ;;
   k) KeyName="$OPTARG" ;;
   [?]) usage 
      exit 0;;
@@ -57,5 +51,3 @@ aws ec2 create-key-pair \
     --key-name ${KeyName} \
     --query 'KeyMaterial' \
     --output text > ${KeyName}.pem
-```
-

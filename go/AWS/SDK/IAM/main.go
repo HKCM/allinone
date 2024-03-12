@@ -42,7 +42,7 @@ var (
 	AWSManagedPolicyPrefix     = "arn:aws:iam::aws:"
 	AllManagedPoliciesDocument = make(map[string]void)
 	// PolicyArnPrefix            = "arn:aws:iam::123456789012:policy/"
-	PolicyArnPrefix = "arn:aws:iam::1234567890:policy/"
+	PolicyArnPrefix = "arn:aws:iam::738595724739:policy/"
 	prodTargetVPC   = []string{
 		"vpc-08c8b3647d8c41669", // prod exchange
 		"vpc-0d3136ef8aa4c0ed6", // prod admin
@@ -158,6 +158,10 @@ func getInstanceProfileName(ec2Client *ec2.Client) map[string]void {
 				{
 					Name:   jsii.String("vpc-id"),
 					Values: prodTargetVPC,
+				},
+				{
+					Name:   jsii.String("instance-state-name"),
+					Values: []string{"running"},
 				},
 			},
 			NextToken: nextToken,

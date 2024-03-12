@@ -4,8 +4,6 @@ GROUPID=XXXXX
 REGION=eu-west-1
 PROFILE=XXXX
 
-
-
 aws ec2 describe-security-groups \
     --profile ${PROFILE} \
     --region ${REGION} \

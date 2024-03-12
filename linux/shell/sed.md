@@ -4,19 +4,19 @@
 
 - `-n`∶ 使用安静(silent)模式。只有经过sed特殊处理的那一行(或者动作)才会被列出来。
 - `-e`∶ 直接在指令列模式上进行 sed 的动作编辑
-- `-f`∶ 直接将 sed 的动作写在一个档案内， -f filename 则可以执行filename 内的sed 动作
+- `-f`∶ 直接将 sed 的动作写在一个档案内, -f filename 则可以执行filename 内的sed 动作
 - `-r`∶ sed 的动作支援的是延伸型正规表示法的语法。(预设是基础正规表示法语法)
-- `-i`∶ 直接修改读取的档案内容，而不是由屏幕输出。
+- `-i`∶ 直接修改读取的档案内容,而不是由屏幕输出。
 
 
 ## 常用命令
 
-- `a`∶ 新增， a 的后面可以接字串，而这些字串会在新的一行出现(目前的下一行)
-- `c`∶ 取代， c 的后面可以接字串，这些字串可以取代 n1,n2 之间的行！
+- `a`∶ 新增, a 的后面可以接字串,而这些字串会在新的一行出现(目前的下一行)
+- `c`∶ 取代, c 的后面可以接字串,这些字串可以取代 n1,n2 之间的行！
 - `d`∶ 删除
-- `i`∶ 插入， i 的后面可以接字串，而这些字串会在新的一行出现(目前的上一行)；
-- `p`∶ 列印，亦即将某个选择的资料印出。通常 p 会与参数 sed -n 一起运作
-- `s`∶ 取代，可以直接进行取代的工作哩！通常这个 s 的动作可以搭配正规表示法！例如 1,20s/old/new/g
+- `i`∶ 插入, i 的后面可以接字串,而这些字串会在新的一行出现(目前的上一行)；
+- `p`∶ 打印,亦打印即将操作的行。通常 p 会与参数 sed -n 一起运作
+- `s`∶ 取代,可以直接进行取代的工作！通常s可以搭配正则
 - `=`：打印行号
 
 
@@ -30,7 +30,7 @@ sed 's/pattern/replace_string/g' file # 全局替换匹配的内容
 sed '/^$/d' file # 删除空行
 sed '/hello/d' file # 删除包含hello的行
 sed -e 's/brown/green/;s/dog/cat/' data1.txt # 执行多条指令
-sed '/Samantha/s/bash/csh/' /etc/passwd # pattern匹配,仅在匹配到Samantha的行中，将bash换为zsh
+sed '/Samantha/s/bash/csh/' /etc/passwd # pattern匹配,仅在匹配到Samantha的行中,将bash换为zsh
 ```
 
 高级用法
@@ -86,7 +86,7 @@ The quick green elephant jumps over the lazy cat.
 
 ## 扩展
 
-sed文件，如果有大量要处理的sed命令，那么将它们放进一个单独的文件中通常会更方便一些。 可以在sed命令中用-f选项来指定文件。
+sed文件,如果有大量要处理的sed命令,那么将它们放进一个单独的文件中通常会更方便一些。 可以在sed命令中用-f选项来指定文件。
 
 ```shell
 $ cat script1.sed 
@@ -110,11 +110,11 @@ sed '2,$s/dog/cat/' data1.txt # 第二行至末行
 
 ### 文本模式过滤
 
-文本模式过滤模式在前方写入pattern，会匹配具有这个pattern的行
+文本模式过滤模式在前方写入pattern,会匹配具有这个pattern的行
 
 ```shell
-# 在匹配到Samantha的行中，将bash换为zsh
-sed '/Samantha/s/bash/csh/' /etc/passwd # 在匹配到Samantha的行中，将bash换为zsh
+# 在匹配到Samantha的行中,将bash换为zsh
+sed '/Samantha/s/bash/csh/' /etc/passwd # 在匹配到Samantha的行中,将bash换为zsh
 ```
 
 在单行中执行多条命令
@@ -178,7 +178,7 @@ sed编辑器不会修改原始文件。你删除的行只是从sed编辑器的�
 ```shell
 
 sed -n '$p' data2.txt # 打印尾行 tail -n 1
-sed '/./,/^$/!d' data8.txt # 无论文件的数据行之间出现了多少空白行，在输出中只会在行间保留一个空白行
+sed '/./,/^$/!d' data8.txt # 无论文件的数据行之间出现了多少空白行,在输出中只会在行间保留一个空白行
 sed '=' data4 | sed 'N;s/\n/ /' # 给文件添加行号
 ```
 
@@ -191,7 +191,7 @@ sed 's/^[[:space:]]*//g' filename
 
 #### 删除HTML标签
 ```shell
-# 排除大于号，否则会进行贪婪匹配，会删除类似<b>first</b>这样的加粗文本
+# 排除大于号,否则会进行贪婪匹配,会删除类似<b>first</b>这样的加粗文本
 sed 's/<[^>]*>//g ; /^$/d' data11.txt
 ```
 

@@ -18,7 +18,7 @@ aws ec2 run-instances \
 --private-ip-address 10.4.7.51
 ```
 
-以下是要在 JSON 文件中为 `--instance-market-options` 指定的数据结构。您还可以指定 `ValidUntil` 和 `InstanceInterruptionBehavior`。如果未在数据结构中指定字段,则将使用默认值。此示例创建一个 `one-time` 请求,并指定 `0.014` 作为您愿意为 Spot 实例支付的最高价。
+以下是要在 JSON 文件中为 `--instance-market-options` 指定的数据结构。还可以指定 `ValidUntil` 和 `InstanceInterruptionBehavior`。如果未在数据结构中指定字段,则将使用默认值。此示例创建一个 `one-time` 请求,并指定 `0.014` 作为您愿意为 Spot 实例支付的最高价。
 
 ```json
 {

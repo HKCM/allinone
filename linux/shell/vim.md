@@ -2,13 +2,17 @@
 
 ## 配置
 
-:set nu/nonu   # 显示行号
-:set ruler     # 显示行号
-:set hlsearch/nohlsearch  # 搜索高亮
-:set incsearch
-:set mouse=a # 启用鼠标
-:set syntax on/off  
-:set list/nolist
+`~/.vimrc` 配置文件
+
+```
+set nu/nonu   # 显示行号
+set ruler     # 显示行号
+set hlsearch/nohlsearch  # 搜索高亮
+set incsearch # 增量搜索
+set mouse=a # 启用鼠标
+set syntax on/off # 语法高亮
+set encoding=utf8 # 选项表示 Vim 内部使用的字符编码 这是防止乱码的关键设置
+```
 
 ## 打开文件
 vim +n file # 打开文件第n行
@@ -18,7 +22,7 @@ vim +/"so cute" file # 打开文件patten所在位置
 vim file1 file2 # 打开多个文件,使用:n :N切换 :ar显示当前的编辑的文件
 vim -O abc 123 # 同时打开两个文件 ctrl + w 之后加左右箭头
 
-`~/.vimrc` 配置文件
+
 
 显示号: :set nu
 保存退出: `:wq` `ZZ`
@@ -74,7 +78,7 @@ vim -O abc 123 # 同时打开两个文件 ctrl + w 之后加左右箭头
 
 s:替换
 
-```
+```bash
 :1s/11/22:将第一行的第一次出现的 11 换成 22
 :n,ms/old/new/g:替换行号n和m之间所有old
 :%s/old/new/g:替换整个文件中的所有old
@@ -138,7 +142,7 @@ vim打开文件乱码,但是 `cat` 能正常显示
 在用户目录的.vimrc中加入如下内容
 ```bash
 set termencoding=utf-8 # 表示终端的字符编码
-set encoding=utf8 # 选项表示 Vim 内部使用的字符编码
+set encoding=utf8 # 选项表示 Vim 内部使用的字符编码 这是关键设置
 # 选项表示打开和保存文件时要尝试的字符编码列表
 set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030,Shift-JIS 
 ```

@@ -2,14 +2,20 @@
 
 rsync不支持两台远程主机直接传输数据
 
+-v 详细模式
+-z 传输压缩
+-a 递归复制整个目录,并保持文件属性
+-P 显示进度
+--delete 使目标目录与源目录保持一致,删除目标上不一致的内容
+
 ## 本地同步
 
 ```bash
 # 如果destination目录不存在,则自动创建, 目录为destination/source的结构
 rsync -r source destination 
 
-# 具有-r的功能,并且同步元信息(比如修改时间、权限等)
-rsync -a source destination 
+# 具有-r的功能,并且同步元信息(比如修改时间、权限等),源目录带/ 会将目录下的文件同步到destination
+rsync -a source/ destination 
 
 # 同步多个目录,source1 source2都将出现在destination目录下
 rsync -a source1 source2 destination

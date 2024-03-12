@@ -1,0 +1,708 @@
+- name: okj-eureka-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:*:secret:okj-eureka*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-apollo-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Deny
+            Resource: "*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-sms-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-sms-eLqQs5"
+            Sid: "1"
+          - Action: "s3:GetObject"
+            Effect: Allow
+            Resource: "arn:aws:s3:::okj-exchange-app-prod/okj-sms/*"
+            Sid: "2"
+          - Action: "sns:Publish"
+            Effect: Allow
+            Resource: "*"
+            Sid: "3"
+      Version: "2012-10-17"
+- name: boss-ops
+  policy:
+      Statement:
+          - Action:
+                - "s3:PutObject"
+                - "s3:GetObject"
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource:
+                - "arn:aws:s3:::okj-exchange-app-prod/*"
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-boss-ops-bjKqbR"
+            Sid: VisualEditor0
+      Version: "2012-10-17"
+- name: okj-web-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-web-D0DLjH"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-kong-server-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:*:secret:okj-kong-server*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-earn-job-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:DescribeSecret"
+                - "secretsmanager:GetSecretValue"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-earn-job-Pi6442"
+      Version: "2012-10-17"
+- name: limit-access-s3-bucket-prod
+  policy:
+      Statement:
+          - Action:
+                - "s3:ListAllMyBuckets"
+                - "s3:GetBucketPublicAccessBlock"
+                - "s3:GetBucketPolicyStatus"
+                - "s3:GetBucketLocation"
+                - "s3:GetBucketAcl"
+                - "s3:GetAccountPublicAccessBlock"
+            Effect: Allow
+            Resource: "*"
+            Sid: "1"
+          - Action: "s3:ListBucket"
+            Effect: Allow
+            Resource:
+                - "arn:aws:s3:::okj-upload-public-prod"
+                - "arn:aws:s3:::okj-sysconfig-prod"
+                - "arn:aws:s3:::okj-prometheus-data-prod"
+                - "arn:aws:s3:::okj-infra-pkg-prod"
+                - "arn:aws:s3:::okj-exchange-app-prod"
+                - "arn:aws:s3:::okj-ec2-logs-prod"
+                - "arn:aws:s3:::okj-boss-app-prod"
+                - "arn:aws:s3:::okj-backup-prod"
+                - "arn:aws:s3:::*.amazonaws.com"
+            Sid: "2"
+          - Action: "s3:GetObject"
+            Effect: Allow
+            Resource:
+                - "arn:aws:s3:::okj-sysconfig-prod/*"
+                - "arn:aws:s3:::okj-infra-pkg-prod/*"
+                - "arn:aws:s3:::*.amazonaws.com/*"
+            Sid: "3"
+          - Action: "s3:*Object"
+            Effect: Allow
+            Resource:
+                - "arn:aws:s3:::okj-upload-public-prod/*"
+                - "arn:aws:s3:::okj-prometheus-data-prod/*"
+                - "arn:aws:s3:::okj-exchange-app-prod/*"
+                - "arn:aws:s3:::okj-boss-app-prod/*"
+                - "arn:aws:s3:::okj-backup-prod/*"
+            Sid: "4"
+          - Action:
+                - "s3:PutObject"
+                - "s3:GetObject"
+            Effect: Allow
+            Resource: "arn:aws:s3:::okj-ec2-logs-prod/*"
+            Sid: "5"
+          - Action:
+                - "kinesis:PutRecords"
+                - "kinesis:PutRecord"
+            Effect: Allow
+            Resource: "arn:aws:kinesis:ap-northeast-1:738595724739:stream/*"
+            Sid: "6"
+          - Action:
+                - "s3:DeleteObject"
+            Effect: Allow
+            Resource: "arn:aws:s3:::okj-exchange-app-prod/*"
+            Sid: "7"
+      Version: "2012-10-17"
+- name: okj-trade-backup-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-trade-backup-vIuSoA"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-tms-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-tms-LF8zMw"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-support-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-support-zMBagC"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: limit-access-s3-bucket-boss-job-prod
+  policy:
+      Statement:
+          - Action:
+                - "s3:ListAllMyBuckets"
+                - "s3:GetBucketPublicAccessBlock"
+                - "s3:GetBucketPolicyStatus"
+                - "s3:GetBucketLocation"
+                - "s3:GetBucketAcl"
+                - "s3:GetAccountPublicAccessBlock"
+            Effect: Allow
+            Resource: "*"
+            Sid: "1"
+          - Action: "s3:ListBucket"
+            Effect: Allow
+            Resource:
+                - "arn:aws:s3:::okj-redshift-data-prod"
+                - "arn:aws:s3:::*.amazonaws.com"
+            Sid: "2"
+          - Action:
+                - "s3:PutObject"
+                - "s3:GetObject"
+            Effect: Allow
+            Resource: "arn:aws:s3:::okj-redshift-data-prod/*"
+            Sid: "3"
+      Version: "2012-10-17"
+- name: okj-user-job-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-users-job-BNAuM7"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-spot-job-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-spot-job-z5wtbj"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-wallet-web-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource:
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-wallet-service-*"
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-wallet-common-*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-kong-core-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:*:secret:okj-kong-core*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-user-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-users-TOQT6C"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-spot-rest-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-spot-com-pDYabg"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-pulsar-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Deny
+            Resource: "*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-wallet-sign-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource:
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-wallet-sign-SLnlef"
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-wallet-master-keeLmZ"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-fiat-job-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-fiat-job-MfQ5LL"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-earn-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:DescribeSecret"
+                - "secretsmanager:GetSecretValue"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-earn-rest-wThbMR"
+      Version: "2012-10-17"
+- name: okj-xxl-job-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-xxl-job-*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-prometheus-prod
+  policy:
+      Statement:
+          - Action:
+                - "ssm:DescribeAssociation"
+                - "ssm:GetDeployablePatchSnapshotForInstance"
+                - "ssm:GetDocument"
+                - "ssm:DescribeDocument"
+                - "ssm:GetManifest"
+                - "ssm:GetParameters"
+                - "ssm:ListAssociations"
+                - "ssm:ListInstanceAssociations"
+                - "ssm:PutInventory"
+                - "ssm:PutComplianceItems"
+                - "ssm:PutConfigurePackageResult"
+                - "ssm:UpdateAssociationStatus"
+                - "ssm:UpdateInstanceAssociationStatus"
+                - "ssm:UpdateInstanceInformation"
+            Effect: Allow
+            Resource: "*"
+            Sid: ""
+          - Action:
+                - "ssmmessages:CreateControlChannel"
+                - "ssmmessages:CreateDataChannel"
+                - "ssmmessages:OpenControlChannel"
+                - "ssmmessages:OpenDataChannel"
+            Effect: Allow
+            Resource: "*"
+            Sid: ""
+          - Action:
+                - "ec2messages:AcknowledgeMessage"
+                - "ec2messages:DeleteMessage"
+                - "ec2messages:FailMessage"
+                - "ec2messages:GetEndpoint"
+                - "ec2messages:GetMessages"
+                - "ec2messages:SendReply"
+            Effect: Allow
+            Resource: "*"
+            Sid: ""
+          - Action:
+                - "cloudwatch:PutMetricData"
+            Effect: Allow
+            Resource: "*"
+            Sid: ""
+          - Action:
+                - "ec2:DescribeInstanceStatus"
+            Effect: Allow
+            Resource: "*"
+            Sid: ""
+          - Action:
+                - "ds:CreateComputer"
+                - "ds:DescribeDirectories"
+            Effect: Allow
+            Resource: "*"
+            Sid: ""
+          - Action:
+                - "logs:CreateLogGroup"
+                - "logs:CreateLogStream"
+                - "logs:DescribeLogGroups"
+                - "logs:DescribeLogStreams"
+                - "logs:PutLogEvents"
+            Effect: Allow
+            Resource: "*"
+            Sid: ""
+          - Action:
+                - "s3:GetBucketLocation"
+                - "s3:PutObject"
+                - "s3:GetObject"
+                - "s3:GetEncryptionConfiguration"
+                - "s3:AbortMultipartUpload"
+                - "s3:ListMultipartUploadParts"
+                - "s3:ListBucket"
+                - "s3:ListBucketMultipartUploads"
+            Effect: Allow
+            Resource: "*"
+            Sid: ""
+      Version: "2012-10-17"
+- name: es_snapshot_role_forUser
+  policy:
+      Statement:
+          Action: "iam:PassRole"
+          Effect: Allow
+          Resource: "arn:aws:iam::738595724739:role/es_snapshot_role"
+      Version: "2012-10-17"
+- name: okj-cold-vault-job-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource:
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-wallet-common-*"
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-cold-vault-web-*"
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-cold-vault-job-*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-asset-job-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+                - "iam:UploadServerCertificate"
+            Effect: Allow
+            Resource:
+                - "arn:aws:iam::738595724739:server-certificate/jnb-ssl-prod*"
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-asset-job-lPksDP"
+            Sid: VisualEditor0
+      Version: "2012-10-17"
+- name: kyc-use-kms
+  policy:
+      Statement:
+          - Action: "secretsmanager:GetSecretValue"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:*:738595724739:secret:prod-kyc-srt-xmke7z"
+            Sid: AllowAccessKycSecret
+      Version: "2012-10-17"
+- name: okj-boss-job-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-boss-job-jg5nt7"
+            Sid: "1"
+          - Action:
+                - "s3:PutObject"
+                - "s3:ListBucket"
+                - "s3:GetObject"
+            Effect: Allow
+            Resource:
+                - "arn:aws:s3:::okj-boss-job-app-prod/*"
+                - "arn:aws:s3:::okj-boss-job-app-prod"
+                - "arn:aws:s3:::okj-assets-cdn-prod/*"
+                - "arn:aws:s3:::okj-assets-cdn-prod"
+            Sid: "2"
+          - Action: "s3:DeleteObject"
+            Effect: Allow
+            Resource: "arn:aws:s3:::okj-assets-cdn-prod/*"
+            Sid: "3"
+      Version: "2012-10-17"
+- name: okj-spot-openrest-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-spot-open-api-Y6HsZP"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-zookeeper-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Deny
+            Resource: "*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-vault-web-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource:
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-vault-web-*"
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-wallet-common-*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-wallet-proxy-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-wallet-proxy-*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-wallet-sign-usb-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource:
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-wallet-sign-usb-HccXia"
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-wallet-master-usb-SFK6mR"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-fiat-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-fiat-oQCZpX"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-common-jobs-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-common-jobs-PIe6ik"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-asset-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-asset-7XyrFX"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-lt-matcher-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Deny
+            Resource: "*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-market-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-market-TyWHuU"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-push-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-push-fyaTdc"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: allow_send_logs_to_cloudwatch_logs
+  policy:
+      Statement:
+          - Action:
+                - "ssmmessages:CreateControlChannel"
+                - "ssmmessages:CreateDataChannel"
+                - "ssmmessages:OpenControlChannel"
+                - "ssmmessages:OpenDataChannel"
+                - "ssm:UpdateInstanceInformation"
+            Effect: Allow
+            Resource: "*"
+          - Action:
+                - "logs:CreateLogStream"
+                - "logs:PutLogEvents"
+                - "logs:DescribeLogGroups"
+                - "logs:DescribeLogStreams"
+            Effect: Allow
+            Resource: "*"
+      Version: "2012-10-17"
+- name: okj-auth-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-auth-9Q6cAp"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-bigdata-engine-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource:
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-bigdata-engine-*"
+            Sid: VisualEditor0
+          - Action:
+                - "s3:List*"
+                - "s3:Get*"
+            Effect: Allow
+            Resource:
+                - "arn:aws:s3:::okj-redshift-data-prod/*"
+                - "arn:aws:s3:::okj-redshift-data-prod"
+            Sid: VisualEditor1
+      Version: "2012-10-17"
+- name: okj-risk-service-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-risk-zVrzOT"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-boss-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource:
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-boss-work-order-cM1VjQ"
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-boss-XOEdqm"
+            Sid: "1"
+          - Action:
+                - "s3:PutObject"
+                - "s3:ListBucket"
+                - "s3:GetObject"
+            Effect: Allow
+            Resource:
+                - "arn:aws:s3:::okj-boss-app-prod/*"
+                - "arn:aws:s3:::okj-boss-app-prod"
+                - "arn:aws:s3:::okj-assets-cdn-prod/*"
+                - "arn:aws:s3:::okj-assets-cdn-prod"
+            Sid: "2"
+          - Action: "s3:DeleteObject"
+            Effect: Allow
+            Resource: "arn:aws:s3:::okj-assets-cdn-prod/*"
+            Sid: "3"
+      Version: "2012-10-17"
+- name: okj-kafka
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:*:secret:okj-kafka*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-spot-counter-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-spot-counter-TzqkM0"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: allow_access_rds_logs
+  policy:
+      Statement:
+          - Action:
+                - "rds:ListTagsForResource"
+                - "rds:DownloadDBLogFilePortion"
+                - "rds:DescribeDBInstances"
+                - "rds:DownloadCompleteDBLogFile"
+                - "rds:DescribeDBLogFiles"
+                - "rds:DescribeDBClusters"
+            Effect: Allow
+            Resource: "*"
+            Sid: VisualEditor0
+      Version: "2012-10-17"
+- name: okj-vault-job-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource:
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-vault-job-*"
+                - "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-wallet-common-*"
+            Sid: "1"
+      Version: "2012-10-17"
+- name: okj-lt-manager-prod
+  policy:
+      Statement:
+          - Action:
+                - "secretsmanager:GetSecretValue"
+                - "secretsmanager:DescribeSecret"
+            Effect: Allow
+            Resource: "arn:aws:secretsmanager:ap-northeast-1:738595724739:secret:prod-okj-lt-manager-tKB7gx"
+            Sid: "1"
+      Version: "2012-10-17"

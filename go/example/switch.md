@@ -62,3 +62,24 @@ func main() {
 //case 3为 false
 //默认 case
 ```
+
+interface 类型判断
+```go
+func main() {
+	var t interface{}
+	t = 10.10
+
+	switch t.(type) {
+	case string:
+		fmt.Println("string")
+	case nil:
+		fmt.Println("nil")
+	case int:
+		fmt.Println("int")
+	case float64:
+		fmt.Println("float64")
+	default:
+		fmt.Println("Other type")
+	}
+}
+```
